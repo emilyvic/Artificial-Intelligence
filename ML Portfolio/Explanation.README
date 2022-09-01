@@ -55,6 +55,13 @@ TRAINING-VALIDATE DATA SEPARATION:
 
 TRAINING QUALITY:
 
+The best model implemented to predict the alcohol level in the wine sample was the 2-degree linear regression model since it had the best level of accuracy
+from the other models implemented. Meaning that the predictions made by this model in particular were closer to the real data in comparison to the one´s made
+with other models. The performance metric used to measure this accuracy level was the Mean Square Error (MSE). The feature variables used in this model in particular 
+were:
+* Acidity level
+* pH level
+
 PERFORMANCE METRIC:
   * MSE (Mean Square Error):
   The MSE is an estimator that measures the average square error between the estimator and the prediction.
