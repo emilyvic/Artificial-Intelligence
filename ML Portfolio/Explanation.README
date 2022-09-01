@@ -16,6 +16,8 @@ DATASET USED:
   Original Source: Paulo Cortez, University of Minho, Guimarães, Portugal, http://www3.dsi.uminho.pt/pcortez
     A. Cerdeira, F. Almeida, T. Matos and J. Reis, Viticulture Commission of the Vinho Verde Region(CVRVV), Porto, Portugal
     @2009
+   
+  Length: 4898
 
 VARIABLES:
 
@@ -42,6 +44,14 @@ VARIABLES:
 
        Predictor Variable (y):*
           * Alcohol level
+
+TRAINING-VALIDATE DATA SEPARATION:
+
+  *For the model implementation, it was necessary to separate the dataset into two subsets:
+      * Training set
+      * Validation set
+   For that reason a ration of 80:20 was considered to divide the dataset. Meaning that 3918 data were asigned to the training set 
+   and 980 data were assigned to the validation set.
 
 TRAINING QUALITY:
 
