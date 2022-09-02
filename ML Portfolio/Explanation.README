@@ -62,13 +62,20 @@ were:
 * Acidity level
 * pH level
 
-PERFORMANCE METRIC:
+PERFORMANCE METRICS:
   * MSE (Mean Square Error):
   The MSE is an estimator that measures the average square error between the estimator and the prediction.
   Measures the difference between the prediction and the actual value of the distribution and is an accuracy measurement to
   determine how accurate the predictions were made based on how distant they were from the actual value. It takes into account the
   variance as well as the standard deviation of the dataset. It was for great value to make sure the dataset didn´t have many outlier predictions with
   a disproportional error, since the MSE puts on a great amount of weight into those errors.
+  
+  * RMSE (Root Mean Square Error):
+    
+    
+  * MAE (Mean Absolute Error):
+  
+  
   
   *Loss Function:
   A loss function in Machine Learning is a measure of how accurately the  ML model is able to predict the expected outcome (the ground truth). 
@@ -79,8 +86,6 @@ PERFORMANCE METRIC:
   means the model performed very poorly. A low value for the loss means our model performed very well.
   
   For the three models implemented, the loss function output was minimun as the initial values of theta were changed in order to minimize the error. 
-  
-FINAL PREDICTIONS:
 
 GOOGLE COLAB URL:
 To access the original code in Google Colab: https://colab.research.google.com/drive/1mR6XGK0iJwqSNgVdJQ8ejnUG2dT3PMeP?usp=sharing 
