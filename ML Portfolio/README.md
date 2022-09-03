@@ -1,6 +1,6 @@
 This is my portfolio for the Machine Learning Module of my Advanced Artificial Inteligence for Data Science course!
 
-*TASK DESCRIPTION:
+#TASK DESCRIPTION:
 
 In this deliverable I implemented a Machine Learning (ML) Algorithm without the use of a Machine Learning and/or estadistical framework/library to determine the alcohol quantity 
 in a wine sample. For the development of the testing part, I generated 3 models based on linear regression, each one with a different degree equation. Being 1-degree, 2-dregree 
