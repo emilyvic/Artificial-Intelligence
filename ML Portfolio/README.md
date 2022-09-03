@@ -135,20 +135,20 @@ cercanos a los reales.
 
 
 # PERFORMANCE METRICS:
-  * MSE (Mean Square Error):
+  * *MSE (Mean Square Error):*
   The MSE is an estimator that measures the average square error between the estimator and the prediction.
   Measures the difference between the prediction and the actual value of the distribution and is an accuracy measurement to
   determine how accurate the predictions were made based on how distant they were from the actual value. It takes into account the
   variance as well as the standard deviation of the dataset. It was for great value to make sure the dataset didn´t have many outlier predictions with
   a disproportional error, since the MSE puts on a great amount of weight into those errors.
   
-  * RMSE (Root Mean Square Error):
+  * *RMSE (Root Mean Square Error):*
     Heuristically that RMSE it represents a normalized distance between the vector of predicted values and the vector of observed values that is being rescaled
     according to the size of observations. Since the MSE can sometimes increase the effect of the biggest errors, the RMSE is al alternative error to ignore the
     inflation effect from elevating the error to the square. Plus it helps to consider the standard deviation σ of a typical observed value from our model’s prediction, assuming that our observed data can be decomposed as:
     observed value = predicted value + predictably distributed random noise with mean zero.
     
-  * MAE (Mean Absolute Error):
+  * *MAE (Mean Absolute Error):*
       
   
   *Loss Function:
