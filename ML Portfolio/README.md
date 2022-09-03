@@ -49,6 +49,7 @@ In this deliverable I implemented a Machine Learning (ML) Algorithm without the 
 
 **Model 1:**
 
+| predictor | predicted | real value | result |
 | volatile_acidity | pred_alcohol | real_alcohol | dif |
 | ------------- | ------------- | ------------- |------------- |
 0.35|12.682355|14.2|1.517645|
@@ -67,7 +68,7 @@ In this deliverable I implemented a Machine Learning (ML) Algorithm without the 
 0.3|12.134947|13.3|1.165053|
 
 **Model 2:**
-
+| predictors | | predicted | real value | result |
 | volatile_acidity | pH | pred_alcohol | real_alcohol | dif |
 | ------------- | ------------- | ------------- |------------- | ------------- |
 0.35|3.12|10.358484|14.2|3.841516|
@@ -86,7 +87,7 @@ In this deliverable I implemented a Machine Learning (ML) Algorithm without the 
 0.3|3.14|10.418477|13.3|2.881523|
 
 **Model 4:**
-
+| predictors | predicted | real value | result |
 | volatile_acidity | pH | sulphates | chlorides | pred_alcohol | real_alcohol | dif |
 | ------------- | ------------- | ------------- |------------- | ------------- | ------------- | ------------- |
 0.35|3.12|0.4|0.037|8.588462|14.2|5.611538|
