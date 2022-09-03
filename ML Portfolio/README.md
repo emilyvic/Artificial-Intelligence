@@ -104,9 +104,11 @@ In this deliverable I implemented a Machine Learning (ML) Algorithm without the 
 			
 # TRAINING-VALIDATE DATA SEPARATION:
 
-  *For the model implementation, it was necessary to separate the dataset into two subsets:
+  For the model implementation, it was necessary to separate the dataset into two subsets:
+  
       * Training set
       * Validation set
+      
    For that reason a ration of 80:20 was considered to divide the dataset. Meaning that 3918 data were asigned to the training set 
    and 980 data were assigned to the validation set.
 
@@ -116,6 +118,7 @@ The best model implemented to predict the alcohol level in the wine sample was t
 from the other models implemented. Meaning that the predictions made by this model in particular were closer to the real data in comparison to the one´s made
 with other models. The performance metric used to measure this accuracy level was the Mean Square Error (MSE). The feature variables used in this model in particular 
 were:
+
 * Acidity level
 * pH level
 
