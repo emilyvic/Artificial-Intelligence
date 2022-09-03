@@ -19,6 +19,7 @@ In this deliverable I implemented a Machine Learning (ML) Algorithm without the 
 # VARIABLES:
 
   **1-degree Model:** 
+  
       Feature Variable (x):
           * x1 = Acidity level
 
@@ -26,12 +27,14 @@ In this deliverable I implemented a Machine Learning (ML) Algorithm without the 
           * Alcohol level
 
   **2-degree Model:**
+  
         Feature Variable (x):
           * x1 = Acidity level
           * x2 = pH
 
    Predictor Variable (y):
           * Alcohol level
+	  
   **4-degree Model:**
         Feature Variable (x):
           * x1 = Acidity level
@@ -105,9 +108,9 @@ In this deliverable I implemented a Machine Learning (ML) Algorithm without the 
 # TRAINING-VALIDATE DATA SEPARATION:
 
   For the model implementation, it was necessary to separate the dataset into two subsets:
-  
-      * Training set
-      * Validation set
+
+  * Training set
+  * Validation set
       
    For that reason a ration of 80:20 was considered to divide the dataset. Meaning that 3918 data were asigned to the training set 
    and 980 data were assigned to the validation set.
