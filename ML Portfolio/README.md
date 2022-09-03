@@ -2,40 +2,37 @@ This is my portfolio for the Machine Learning Module of my Advanced Artificial I
 
 # TASK DESCRIPTION:
 
-In this deliverable I implemented a Machine Learning (ML) Algorithm without the use of a Machine Learning and/or estadistical framework/library to determine the alcohol quantity 
-in a wine sample. For the development of the testing part, I generated 3 models based on linear regression, each one with a different degree equation. Being 1-degree, 2-dregree 
-and 4-degree algorithms respectively. In the preparation part, I made sure to separate the dataset in two groups as training and validation in order to test the precision of the 
-algorithm with real results. Then, I tested the implementation of the model with the validation portion of my dataset and printed out some predictions as a sample. 
+In this deliverable I implemented a Machine Learning (ML) Algorithm without the use of a Machine Learning and/or estadistical framework/library to determine the alcohol quantity in a wine sample. For the development of the testing part, I generated 3 models based on linear regression, each one with a different degree equation. Being 1-degree, 2-dregree and 4-degree algorithms respectively. In the preparation part, I made sure to separate the dataset in two groups as training and validation in order to test the precision of the  algorithm with real results. Then, I tested the implementation of the model with the validation portion of my dataset and printed out some predictions as a sample. 
 
 # DATASET USED: 
 
-  *Name:* Winequality.csv
+  **Name:** Winequality.csv
   
-  Source: https://archive.ics.uci.edu/ml/datasets/wine+quality
+  **Source:** https://archive.ics.uci.edu/ml/datasets/wine+quality
   
   Original Source: Paulo Cortez, University of Minho, Guimarães, Portugal, http://www3.dsi.uminho.pt/pcortez
     A. Cerdeira, F. Almeida, T. Matos and J. Reis, Viticulture Commission of the Vinho Verde Region(CVRVV), Porto, Portugal
     @2009
    
-  Length: 4898
+  **Length:** 4898
 
 # VARIABLES:
 
-  1-degree Model: 
+  **1-degree Model:** 
       Feature Variable (x):
           * x1 = Acidity level
 
        Predictor Variable (y):*
           * Alcohol level
 
-  2-degree Model:
+  **2-degree Model:**
         Feature Variable (x):
           * x1 = Acidity level
           * x2 = pH
 
        Predictor Variable (y):*
           * Alcohol level
-  4-degree Model:
+  **4-degree Model:**
         Feature Variable (x):
           * x1 = Acidity level
           * x2 = pH
@@ -47,7 +44,7 @@ algorithm with real results. Then, I tested the implementation of the model with
 
 # PREDICTIONS:
 
-Model 1:
+**Model 1:**
 
 | volatile_acidity | pred_alcohol | real_alcohol | dif |
 | ------------- | ------------- | ------------- |------------- |
@@ -66,7 +63,7 @@ Model 1:
 0.28|11.915984|12.1|0.184016|
 0.3|12.134947|13.3|1.165053|
 
-Model 2:
+**Model 2:**
 
 | volatile_acidity | pH | pred_alcohol | real_alcohol | dif |
 | ------------- | ------------- | ------------- |------------- | ------------- |
@@ -85,7 +82,7 @@ Model 2:
 0.28|3.03|10.088526|12.1|2.011474|
 0.3|3.14|10.418477|13.3|2.881523|
 
-Model 4:
+**Model 4:**
 
 | volatile_acidity | pH | sulphates | chlorides | pred_alcohol | real_alcohol | dif |
 | ------------- | ------------- | ------------- |------------- | ------------- | ------------- | ------------- |
@@ -148,8 +145,7 @@ cercanos a los reales.
   * RMSE (Root Mean Square Error):
     Heuristically that RMSE it represents a normalized distance between the vector of predicted values and the vector of observed values that is being rescaled
     according to the size of observations. Since the MSE can sometimes increase the effect of the biggest errors, the RMSE is al alternative error to ignore the
-    inflation effect from elevating the error to the square. Plus it helps to consider the standard deviation σ of a typical observed value from our model’s prediction, 
-    assuming that our observed data can be decomposed as:
+    inflation effect from elevating the error to the square. Plus it helps to consider the standard deviation σ of a typical observed value from our model’s prediction, assuming that our observed data can be decomposed as:
     observed value = predicted value + predictably distributed random noise with mean zero.
     
   * MAE (Mean Absolute Error):
@@ -160,10 +156,9 @@ cercanos a los reales.
   The loss function will take two items as input: 
   * the output value of our model 
   * the ground truth expected value. 
-  The output of the loss function is called the loss which is a measure of how well our model did at predicting the outcome. A high value for the loss 
-  means the model performed very poorly. A low value for the loss means our model performed very well.
+  The output of the loss function is called the loss which is a measure of how well our model did at predicting the outcome. A high value for the loss means the model performed very poorly. A low value for the loss means our model performed very well.
   
   For the three models implemented, the loss function output was minimun as the initial values of theta were changed in order to minimize the error. 
 
 # GOOGLE COLAB URL:
-To access the original code in Google Colab: https://colab.research.google.com/drive/1mR6XGK0iJwqSNgVdJQ8ejnUG2dT3PMeP?usp=sharing 
+**To access the original code in Google Colab:** https://colab.research.google.com/drive/1mR6XGK0iJwqSNgVdJQ8ejnUG2dT3PMeP?usp=sharing 
