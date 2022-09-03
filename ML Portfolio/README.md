@@ -1,15 +1,15 @@
 This is my portfolio for the Machine Learning Module of my Advanced Artificial Inteligence for Data Science course!
 
-TASK DESCRIPTION:
+*TASK DESCRIPTION:
 
 In this deliverable I implemented a Machine Learning (ML) Algorithm without the use of a Machine Learning and/or estadistical framework/library to determine the alcohol quantity 
 in a wine sample. For the development of the testing part, I generated 3 models based on linear regression, each one with a different degree equation. Being 1-degree, 2-dregree 
 and 4-degree algorithms respectively. In the preparation part, I made sure to separate the dataset in two groups as training and validation in order to test the precision of the 
 algorithm with real results. Then, I tested the implementation of the model with the validation portion of my dataset and printed out some predictions as a sample. 
 
-DATASET USED: 
+*DATASET USED: 
 
-  Name: Winequality.csv
+  *Name:* Winequality.csv
   
   Source: https://archive.ics.uci.edu/ml/datasets/wine+quality
   
@@ -19,7 +19,7 @@ DATASET USED:
    
   Length: 4898
 
-VARIABLES:
+*VARIABLES:
 
   1-degree Model: 
       Feature Variable (x):
@@ -45,7 +45,7 @@ VARIABLES:
        Predictor Variable (y):*
           * Alcohol level
 
-PREDICTIONS:
+*PREDICTIONS:
 
 Model 1:
 
@@ -105,7 +105,7 @@ Model 4:
 0.3|3.14|0.41|0.036|8.534017|13.3|4.765983|
 
 			
-TRAINING-VALIDATE DATA SEPARATION:
+*TRAINING-VALIDATE DATA SEPARATION:
 
   *For the model implementation, it was necessary to separate the dataset into two subsets:
       * Training set
@@ -113,7 +113,7 @@ TRAINING-VALIDATE DATA SEPARATION:
    For that reason a ration of 80:20 was considered to divide the dataset. Meaning that 3918 data were asigned to the training set 
    and 980 data were assigned to the validation set.
 
-TRAINING QUALITY:
+*TRAINING QUALITY:
 
 The best model implemented to predict the alcohol level in the wine sample was the 2-degree linear regression model since it had the best level of accuracy
 from the other models implemented. Meaning that the predictions made by this model in particular were closer to the real data in comparison to the one´s made
@@ -137,7 +137,7 @@ error mucho menor al valor de desviación estándar para tener una precisión al
 cercanos a los reales.
 
 
-PERFORMANCE METRICS:
+*PERFORMANCE METRICS:
   * MSE (Mean Square Error):
   The MSE is an estimator that measures the average square error between the estimator and the prediction.
   Measures the difference between the prediction and the actual value of the distribution and is an accuracy measurement to
@@ -165,5 +165,5 @@ PERFORMANCE METRICS:
   
   For the three models implemented, the loss function output was minimun as the initial values of theta were changed in order to minimize the error. 
 
-GOOGLE COLAB URL:
+*GOOGLE COLAB URL:
 To access the original code in Google Colab: https://colab.research.google.com/drive/1mR6XGK0iJwqSNgVdJQ8ejnUG2dT3PMeP?usp=sharing 
