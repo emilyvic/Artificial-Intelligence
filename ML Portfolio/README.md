@@ -92,7 +92,7 @@ Model 2:
 
 Model 4:
 
-| volatile_acidity | pH | sulphates	| chlorides | pred_alcohol | real_alcohol | dif |
+| volatile_acidity | pH | sulphates | chlorides | pred_alcohol | real_alcohol | dif |
 | ------------- | ------------- | ------------- |------------- | ------------- | ------------- | ------------- |
 0.35|3.12|0.4|0.037|8.588462|14.2|5.611538|
 0.31|3|0.4|0.035|8.294482|13.2|4.905518|
@@ -127,6 +127,21 @@ were:
 * Acidity level
 * pH level
 
+En lo que respecta al MSE, esta métrica muestra el promedio de los cuadrados de los errores por lo que, aunque esta métrica permite medir el nivel de cambio lineal 
+que ocurre en los datos, el hecho de elevar las diferencias al cuadrado tiende a magnificar/inflar los errores y por ende, datos muy alejados logran impactar 
+mayormente al resultado general. Por tal motivo, se utiliza el RMSE el cuál quita este efecto de inflación al obtener la raíz cuadrada del MSE. Tal fue el caso del 
+modelo de Orden 2 ya que si bien los MSE's de entrenamiento y validación estuvieron por debajo de 0.9, al obtener la métrica de los RMSE's estos valores fueron aún 
+más bajos con una diferencia de 0.2 debido al efecto de la inflación del cuadrado de los errores, el cuál es un margen extremadamente bueno de error. Finalmente, se 
+corroboraron estos valores con la métrica del MAE en la cuál las puntuaciones aumentan linealmente con el error promedio de los valores del error absoluto. Por ende, 
+los valores del MAE coincidieron con los del RMSE lo que quiere decir que independientemente del signo de los errores, estos se encuentrán por debajo de 0.6, 
+lo que indica un alto nivel de precisión en las predicciones. 
+
+Dentro del contexto del problema, este error es relevante ya que lo que se está intentando predecir es el nivel de alcohol que tiene un vino dadas su nivel de 
+acidez y su pH, y dado que el nivel de alcohol oscila entre un valor de 8 a 14.2 con una desviación estándar de 1.23, es conveniente que nuestro modelo tenga un 
+error mucho menor al valor de desviación estándar para tener una precisión alta y que los valores de alcohol que se obtengan en futuras observaciones sean lo más 
+cercanos a los reales.
+
+
 PERFORMANCE METRICS:
   * MSE (Mean Square Error):
   The MSE is an estimator that measures the average square error between the estimator and the prediction.
@@ -136,11 +151,14 @@ PERFORMANCE METRICS:
   a disproportional error, since the MSE puts on a great amount of weight into those errors.
   
   * RMSE (Root Mean Square Error):
-    
+    Heuristically that RMSE it represents a normalized distance between the vector of predicted values and the vector of observed values that is being rescaled
+    according to the size of observations. Since the MSE can sometimes increase the effect of the biggest errors, the RMSE is al alternative error to ignore the
+    inflation effect from elevating the error to the square. Plus it helps to consider the standard deviation σ of a typical observed value from our model’s prediction, 
+    assuming that our observed data can be decomposed as:
+    observed value = predicted value + predictably distributed random noise with mean zero.
     
   * MAE (Mean Absolute Error):
-  
-  
+      
   
   *Loss Function:
   A loss function in Machine Learning is a measure of how accurately the  ML model is able to predict the expected outcome (the ground truth). 
