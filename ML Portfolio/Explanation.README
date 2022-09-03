@@ -1,5 +1,10 @@
 This is my portfolio for the Machine Learning Module of my Advanced Artificial Inteligence for Data Science course!
 
+| Primer encabezado | Segundo encabezado |
+| ------------- | ------------- |
+| Contenido de la celda  | Contenido de la celda  |
+| Contenido de la celda  | Contenido de la celda  |
+
 TASK DESCRIPTION:
 
 In this deliverable I implemented a Machine Learning (ML) Algorithm without the use of a Machine Learning and/or estadistical framework/library to determine the alcohol quantity 
