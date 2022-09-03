@@ -119,6 +119,14 @@ were:
 * Acidity level
 * pH level
 
+  *Loss Function:*
+  A loss function in Machine Learning is a measure of how accurately the  ML model is able to predict the expected outcome (the ground truth). 
+  The loss function will take two items as input: 
+  * the output value of our model 
+  * the ground truth expected value. 
+  The output of the loss function is called the loss which is a measure of how well our model did at predicting the outcome. A high value for the loss means the model performed very poorly. A low value for the loss means our model performed very well.
+  
+  # QUALITY OF THE PREDICTIONS:
 En lo que respecta al MSE, esta métrica muestra el promedio de los cuadrados de los errores por lo que, aunque esta métrica permite medir el nivel de cambio lineal 
 que ocurre en los datos, el hecho de elevar las diferencias al cuadrado tiende a magnificar/inflar los errores y por ende, datos muy alejados logran impactar 
 mayormente al resultado general. Por tal motivo, se utiliza el RMSE el cuál quita este efecto de inflación al obtener la raíz cuadrada del MSE. Tal fue el caso del 
@@ -150,13 +158,7 @@ cercanos a los reales.
     
   * *MAE (Mean Absolute Error):*
       
-  
-  *Loss Function:*
-  A loss function in Machine Learning is a measure of how accurately the  ML model is able to predict the expected outcome (the ground truth). 
-  The loss function will take two items as input: 
-  * the output value of our model 
-  * the ground truth expected value. 
-  The output of the loss function is called the loss which is a measure of how well our model did at predicting the outcome. A high value for the loss means the model performed very poorly. A low value for the loss means our model performed very well.
+ 
   
   For the three models implemented, the loss function output was minimun as the initial values of theta were changed in order to minimize the error. 
 
