@@ -124,7 +124,8 @@ were:
   The loss function will take two items as input: 
   * the output value of our model 
   * the ground truth expected value. 
-  The output of the loss function is called the loss which is a measure of how well our model did at predicting the outcome. A high value for the loss means the model performed very poorly. A low value for the loss means our model performed very well.
+  * The output of the loss function is called the loss which is a measure of how well our model did at predicting the outcome. A high value for the loss means the model performed very poorly. A low value for the loss means our model performed very well.
+  *  For the three models implemented, the loss function output was minimun as the initial values of theta were changed in order to minimize the error. 
   
   # QUALITY OF THE PREDICTIONS:
 En lo que respecta al MSE, esta métrica muestra el promedio de los cuadrados de los errores por lo que, aunque esta métrica permite medir el nivel de cambio lineal 
@@ -141,26 +142,22 @@ acidez y su pH, y dado que el nivel de alcohol oscila entre un valor de 8 a 14.2
 error mucho menor al valor de desviación estándar para tener una precisión alta y que los valores de alcohol que se obtengan en futuras observaciones sean lo más 
 cercanos a los reales.
 
-
 # PERFORMANCE METRICS:
-  * *MSE (Mean Square Error):*
+  * ***MSE (Mean Square Error):***
   The MSE is an estimator that measures the average square error between the estimator and the prediction.
   Measures the difference between the prediction and the actual value of the distribution and is an accuracy measurement to
   determine how accurate the predictions were made based on how distant they were from the actual value. It takes into account the
   variance as well as the standard deviation of the dataset. It was for great value to make sure the dataset didn´t have many outlier predictions with
   a disproportional error, since the MSE puts on a great amount of weight into those errors.
   
-  * *RMSE (Root Mean Square Error):*
+  * ***RMSE (Root Mean Square Error):***
     Heuristically that RMSE it represents a normalized distance between the vector of predicted values and the vector of observed values that is being rescaled
     according to the size of observations. Since the MSE can sometimes increase the effect of the biggest errors, the RMSE is al alternative error to ignore the
     inflation effect from elevating the error to the square. Plus it helps to consider the standard deviation σ of a typical observed value from our model’s prediction, assuming that our observed data can be decomposed as:
     observed value = predicted value + predictably distributed random noise with mean zero.
     
-  * *MAE (Mean Absolute Error):*
-      
- 
-  
-  For the three models implemented, the loss function output was minimun as the initial values of theta were changed in order to minimize the error. 
+  * ***MAE (Mean Absolute Error):***
+    Absolute Error is the amount of error in your measurements. Is the mean of the absolute values of the individual prediction errors on over all instances in the test set. Each prediction error is the difference between the true value and the predicted value for the instance.
 
 # GOOGLE COLAB URL:
 **To access the original code in Google Colab:** https://colab.research.google.com/drive/1mR6XGK0iJwqSNgVdJQ8ejnUG2dT3PMeP?usp=sharing 
