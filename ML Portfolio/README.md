@@ -10,7 +10,7 @@ In this deliverable I implemented a Machine Learning (ML) Algorithm without the 
   
   **Source:** https://archive.ics.uci.edu/ml/datasets/wine+quality
   
-  Original Source: Paulo Cortez, University of Minho, Guimarães, Portugal, http://www3.dsi.uminho.pt/pcortez
+  **Original Source:** Paulo Cortez, University of Minho, Guimarães, Portugal, http://www3.dsi.uminho.pt/pcortez
     A. Cerdeira, F. Almeida, T. Matos and J. Reis, Viticulture Commission of the Vinho Verde Region(CVRVV), Porto, Portugal
     @2009
    
@@ -20,7 +20,7 @@ In this deliverable I implemented a Machine Learning (ML) Algorithm without the 
 
   **1-degree Model:** 
   
-      Feature Variable (x):
+  Feature Variable (x):
           * x1 = Acidity level
 
    Predictor Variable (y):
@@ -28,7 +28,7 @@ In this deliverable I implemented a Machine Learning (ML) Algorithm without the 
 
   **2-degree Model:**
   
-        Feature Variable (x):
+   Feature Variable (x):
           * x1 = Acidity level
           * x2 = pH
 
