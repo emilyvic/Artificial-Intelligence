@@ -151,7 +151,7 @@ cercanos a los reales.
   * *MAE (Mean Absolute Error):*
       
   
-  *Loss Function:
+  *Loss Function:*
   A loss function in Machine Learning is a measure of how accurately the  ML model is able to predict the expected outcome (the ground truth). 
   The loss function will take two items as input: 
   * the output value of our model 
