@@ -1,55 +1,45 @@
 This is my portfolio for the Machine Learning Module of my Advanced Artificial Inteligence for Data Science course!
 
+(librería utilizada, dataset usado, métrica de desempeño (valor logrado sobre el subset de prueba), predicciones de prueba (entradas, valor esperado, valor obtenido
+
 # TASK DESCRIPTION:
 
-In this deliverable I implemented a Machine Learning (ML) Algorithm with the use of a Machine Learning and/or estadistical framework/library to determine the alcohol quantity in a wine sample. For the development of the testing part, I generated 3 models based on linear regression, each one with a different degree equation. Being 1-degree, 2-dregree and 4-degree algorithms respectively. In the preparation part, I made sure to separate the dataset in two groups as training and validation in order to test the precision of the  algorithm with real results. Then, I tested the implementation of the model with the validation portion of my dataset and printed out some predictions as a sample. 
+In this deliverable I implemented a Machine Learning (ML) Algorithm with the use of a Machine Learning and/or estadistical framework/library to determine if a patient may have or not a stroke. For the development of the testing part, I generated 2  models based on linear regression, each one with a different degree equation. Being 1-degree, 2-dregree and 4-degree algorithms respectively. In the preparation part, I made sure to separate the dataset in two groups as training and validation in order to test the precision of the  algorithm with real results. Then, I tested the implementation of the model with the validation portion of my dataset and printed out some predictions as a sample. 
+
+# LIBRARY USED:
+	SKlearn - Desicion Tree
 
 # DATASET USED: 
 
-  **Name:** Winequality.csv
+  **Name:** Brain stroke prediction dataset 
+  	.csv
   
-  **Source:** https://archive.ics.uci.edu/ml/datasets/wine+quality
-  
-  **Original Source:** Paulo Cortez, University of Minho, Guimarães, Portugal, http://www3.dsi.uminho.pt/pcortez
-    A. Cerdeira, F. Almeida, T. Matos and J. Reis, Viticulture Commission of the Vinho Verde Region(CVRVV), Porto, Portugal
-    @2009
+  **Source:** [Dataset en Kaggle](https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset)  
+  **Original Source:** Data files © Original Authors
    
-  **Length:** 4898
+  **Length:** 4981
 
 # VARIABLES:
 
-  **1-degree Model:** 
-  
-  Feature Variable (x):
-          * x1 = Acidity level
+  **Feature Variables (x):**
+          * 1) gender: "Male", "Female" or "Other"
+	  * 2) age: age of the patient
+	  * 3) hypertension: 0 if the patient doesn't have hypertension, 1 if the patient has hypertension
+          * 4) heartdisease: 0 if the patient doesn't have any heart diseases, 1 if the patient has a heart disease 
+	  * 5) evermarried: "No" or "Yes"
+	  * 6) worktype: "children", "Govtjov", "Neverworked", "Private" or "Self-employed" 7) Residencetype: "Rural" or "Urban"
+          * 8) avgglucoselevel: average glucose level in blood
+          * 9) bmi: body mass index
+          * 10) smoking_status: "formerly smoked", "never smoked", "smokes" or "Unknown"*
 
-   Predictor Variable (y):
-          * Alcohol level
-
-  **2-degree Model:**
-  
-   Feature Variable (x):
-          * x1 = Acidity level
-          * x2 = pH
-
-   Predictor Variable (y):
-          * Alcohol level
-	  
-  **4-degree Model:**
-        Feature Variable (x):
-          * x1 = Acidity level
-          * x2 = pH
-          * x3 = sulphates
-          * x4 = chlorides
-
-  Predictor Variable (y):
-          * Alcohol level
+  **Predictor Variable (y):**
+          * 1 if the patient had a stroke or 0 if not
 
 # PREDICTIONS:
 
-**Model 1:**
+**Tree 1 with Entropy Metric:**
 
-| volatile_acidity | pred_alcohol | real_alcohol | dif |
+| gender | age | hypertension | heartdisease | evermarried | worktype | avgglucoselevel | bmi | smoking_status |
 | ------------- | ------------- | ------------- |------------- |
 0.35|12.682355|14.2|1.517645|
 0.31|12.244429|13.2|0.955571|
@@ -66,7 +56,7 @@ In this deliverable I implemented a Machine Learning (ML) Algorithm with the use
 0.28|11.915984|12.1|0.184016|
 0.3|12.134947|13.3|1.165053|
 
-**Model 2:**
+**Tree 2 with Gini Metric:**
 | volatile_acidity | pH | pred_alcohol | real_alcohol | dif |
 | ------------- | ------------- | ------------- |------------- | ------------- |
 0.35|3.12|10.358484|14.2|3.841516|
@@ -84,25 +74,6 @@ In this deliverable I implemented a Machine Learning (ML) Algorithm with the use
 0.28|3.03|10.088526|12.1|2.011474|
 0.3|3.14|10.418477|13.3|2.881523|
 
-**Model 4:**
-| volatile_acidity | pH | sulphates | chlorides | pred_alcohol | real_alcohol | dif |
-| ------------- | ------------- | ------------- |------------- | ------------- | ------------- | ------------- |
-0.35|3.12|0.4|0.037|8.588462|14.2|5.611538|
-0.31|3|0.4|0.035|8.294482|13.2|4.905518|
-0.25|3.04|0.53|0.05|9.771173|11.2|1.428827|
-0.36|3.14|0.57|0.057|10.599866|10.2|0.399866|
-0.31|3.09|0.36|0.038|8.422215|12.8|4.377785|
-0.31|2.95|0.39|0.045|8.852826|10.1|1.247174|
-0.31|2.95|0.39|0.045|8.852826|10.1|1.247174|
-0.22|2.83|0.31|0.031|7.408369|10.3|2.891631|
-0.14|3.19|0.33|0.056|9.404861|9.9|0.495139|
-0.22|3.15|0.31|0.046|8.713697|11.5|2.786303|
-0.32|3.18|0.56|0.063|10.951008|9|1.951008|
-0.32|3.18|0.56|0.063|10.951008|9|1.951008|
-0.28|3.03|0.41|0.03|8.010413|12.1|4.089587|
-0.3|3.14|0.41|0.036|8.534017|13.3|4.765983|
-
-			
 # TRAINING-VALIDATE DATA SEPARATION:
 
   For the model implementation, it was necessary to separate the dataset into two subsets:
