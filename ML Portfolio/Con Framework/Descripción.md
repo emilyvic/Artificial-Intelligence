@@ -39,8 +39,8 @@ In this deliverable I implemented a Machine Learning (ML) classification Algorit
 
 **Tree 1 with Entropy Metric:**
 
-| gender | age | hypertension | heartdisease | evermarried | worktype | avgglucoselevel | bmi | smoking_status | real stroke | pred stroke | compare
-| ------------- | ------------- | ------------- |------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| index | gender | age | hypertension | heartdisease | evermarried | worktype | avgglucoselevel | bmi | smoking_status | real stroke | pred stroke | compare
+| ------------- | ------------- | ------------- |------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 635|1|19|0|0|0|1|1|91.69|39.5|2|0|0|TRUE|
 796|0|80|0|0|1|1|1|56.99|26.7|0|0|0|TRUE|
 572|0|28|0|0|0|1|1|85.79|26.7|2|0|0|TRUE|
@@ -145,8 +145,8 @@ In this deliverable I implemented a Machine Learning (ML) classification Algorit
 
 
 **Tree 2 with Gini Metric:**
-| gender | age | hypertension | heartdisease | evermarried | worktype | avgglucoselevel | bmi | smoking_status | real stroke | pred stroke | compare
-| ------------- | ------------- | ------------- |------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| index | gender | age | hypertension | heartdisease | evermarried | worktype | avgglucoselevel | bmi | smoking_status | real stroke | pred stroke | compare
+| ------------- | ------------- | ------------- |------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 635|1|19|0|0|0|1|1|91.69|39.5|2|0|0|TRUE|
 796|0|80|0|0|1|1|1|56.99|26.7|0|0|0|TRUE|
 572|0|28|0|0|0|1|1|85.79|26.7|2|0|0|TRUE|
