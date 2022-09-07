@@ -141,7 +141,6 @@ In this deliverable I implemented a Machine Learning (ML) classification Algorit
 3053|1|67|0|0|1|3|0|110.41|28.7|0|0|0|TRUE|
 4706|1|20|0|0|0|1|1|117.59|17.1|0|0|0|TRUE|
 1118|1|78|1|0|1|3|1|59.2|29.1|2|0|0|TRUE|
-![image](https://user-images.githubusercontent.com/69470979/188771701-8dae8948-d233-4dff-a129-77955709e6a9.png)
 
 
 **Tree 2 with Gini Metric:**
@@ -247,7 +246,6 @@ In this deliverable I implemented a Machine Learning (ML) classification Algorit
 3053|1|67|0|0|1|3|0|110.41|28.7|0|0|0|TRUE|
 4706|1|20|0|0|0|1|1|117.59|17.1|0|0|0|TRUE|
 1118|1|78|1|0|1|3|1|59.2|29.1|2|0|0|TRUE|
-![image](https://user-images.githubusercontent.com/69470979/188771922-7d34a6cf-3a27-4e02-8f97-bdbb26c6d91d.png)
 
 
 # TRAINING-VALIDATE DATA SEPARATION:
@@ -255,60 +253,33 @@ In this deliverable I implemented a Machine Learning (ML) classification Algorit
   For the model implementation, it was necessary to separate the dataset into two subsets:
 
   * Training set
-  * Validation set
+  * Test set
       
-   For that reason a ration of 80:20 was considered to divide the dataset. Meaning that 3918 data were asigned to the training set 
-   and 980 data were assigned to the validation set.
+   For that reason a ration of 60:40 was considered to divide the dataset using the train_test_split module from the sklearn.model_selection library. Meaning that 2988 data were asigned to the training set and 1992 data were assigned to the testing set.
 
 # TRAINING QUALITY:
 
-The best model implemented to predict the alcohol level in the wine sample was the 2-degree linear regression model since it had the best level of accuracy
-from the other models implemented. Meaning that the predictions made by this model in particular were closer to the real data in comparison to the one´s made
-with other models. The performance metric used to measure this accuracy level was the Mean Square Error (MSE). The feature variables used in this model in particular 
-were:
-
-* Acidity level
-* pH level
-
-  *Loss Function:*
-  A loss function in Machine Learning is a measure of how accurately the  ML model is able to predict the expected outcome (the ground truth). 
-  The loss function will take two items as input: 
-  * the output value of our model 
-  * the ground truth expected value. 
-  * The output of the loss function is called the loss which is a measure of how well our model did at predicting the outcome. A high value for the loss means the model performed very poorly. A low value for the loss means our model performed very well.
-  *  For the three models implemented, the loss function output was minimun as the initial values of theta were changed in order to minimize the error. 
+ 
   
 # QUALITY OF THE PREDICTIONS:
 
-En lo que respecta al MSE, esta métrica muestra el promedio de los cuadrados de los errores por lo que, aunque esta métrica permite medir el nivel de cambio lineal 
-que ocurre en los datos, el hecho de elevar las diferencias al cuadrado tiende a magnificar/inflar los errores y por ende, datos muy alejados logran impactar 
-mayormente al resultado general. Por tal motivo, se utiliza el RMSE el cuál quita este efecto de inflación al obtener la raíz cuadrada del MSE. Tal fue el caso del 
-modelo de Orden 2 ya que si bien los MSE's de entrenamiento y validación estuvieron por debajo de 0.9, al obtener la métrica de los RMSE's estos valores fueron aún 
-más bajos con una diferencia de 0.2 debido al efecto de la inflación del cuadrado de los errores, el cuál es un margen extremadamente bueno de error. Finalmente, se 
-corroboraron estos valores con la métrica del MAE en la cuál las puntuaciones aumentan linealmente con el error promedio de los valores del error absoluto. Por ende, 
-los valores del MAE coincidieron con los del RMSE lo que quiere decir que independientemente del signo de los errores, estos se encuentrán por debajo de 0.6, 
-lo que indica un alto nivel de precisión en las predicciones. 
-
-Dentro del contexto del problema, este error es relevante ya que lo que se está intentando predecir es el nivel de alcohol que tiene un vino dadas su nivel de 
-acidez y su pH, y dado que el nivel de alcohol oscila entre un valor de 8 a 14.2 con una desviación estándar de 1.23, es conveniente que nuestro modelo tenga un 
-error mucho menor al valor de desviación estándar para tener una precisión alta y que los valores de alcohol que se obtengan en futuras observaciones sean lo más 
-cercanos a los reales.
+  * ***Confusion Matrix:***
 
 # PERFORMANCE METRICS:
-  * ***MSE (Mean Square Error):***
-  The MSE is an estimator that measures the average square error between the estimator and the prediction.
-  Measures the difference between the prediction and the actual value of the distribution and is an accuracy measurement to
-  determine how accurate the predictions were made based on how distant they were from the actual value. It takes into account the
-  variance as well as the standard deviation of the dataset. It was for great value to make sure the dataset didn´t have many outlier predictions with
-  a disproportional error, since the MSE puts on a great amount of weight into those errors.
-  
-  * ***RMSE (Root Mean Square Error):***
-    Heuristically that RMSE it represents a normalized distance between the vector of predicted values and the vector of observed values that is being rescaled
-    according to the size of observations. Since the MSE can sometimes increase the effect of the biggest errors, the RMSE is al alternative error to ignore the
-    inflation effect from elevating the error to the square. Plus it helps to consider the standard deviation σ of a typical observed value from our model’s prediction, assuming that our observed data can be decomposed as:
-    observed value = predicted value + predictably distributed random noise with mean zero.
+  * ***Accuracy:***
+Is one of the most common performance metrics to evaluate a classification model. In simple terms, it represents the fraction of correct predictions that the model got right as a percentage of the total predictions that are made. It is calculated as the ration between the number of correct predictions over the total number of predictions. *Within everything that has been predicted as a positive, precision counts the percentage that is correct* In case of a binary classification, accuracy can  be calculated in terms of positives and negatives as follows: 
+![image](https://user-images.githubusercontent.com/69470979/188773515-17e431ab-f949-4d26-b0af-f54c2ed73108.png)
+Where TP = True Positives, TN = True Negatives, FP = False Positives, and FN = False Negatives. 
+Accuracy may be one of the main evaluation metrics, but it doesn't always tell us the whole truth, specially when  you're working with a class-imbalanced data set where there is a significant disparity between the number of positive and negative labels.
+
+  * ***Recall:***
+Recall is the second metric one should look out for after measuring accuracy, since it gives us insight about the model's performance when it comes to the proportion of actual positives that were correctly identified. *Within everything that actually is positive, how many did the model succeed to find.* It is calculated as follows:
+![image](https://user-images.githubusercontent.com/69470979/188773942-663ba216-a1f7-48cf-846f-5ad480e9f4d1.png)
+Where TP = True Positives and FN = False Negatives. 
     
-  * ***MAE (Mean Absolute Error):***
-    Absolute Error is the amount of error in your measurements. Is the mean of the absolute values of the individual prediction errors on over all instances in the test set. Each prediction error is the difference between the true value and the predicted value for the instance.
+  * ***F1 Score:***
+The F1 score represents an improvement of two simpler performance metrics: precision and recall. In the majority of cases, it is possible to modify a model to increase precision at a cost of a lower recall, or on the other hand increase recall at the cost of lower precision. Therefore, the goal of the F1 Score is to combine both of this metrics into a single one, in order to correctly analize unbalanced data. Hence, the F1 score is defined as the harmonic mean of precision and recall. 
+
 
 # GOOGLE COLAB URL:
+https://colab.research.google.com/drive/1ucEgN-YAAssPGy2eJw1gXxcQlkAERKiZ?usp=sharing
