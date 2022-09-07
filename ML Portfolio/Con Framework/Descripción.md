@@ -268,13 +268,17 @@ In this deliverable I implemented a Machine Learning (ML) classification Algorit
 # PERFORMANCE METRICS:
   * ***Accuracy:***
 Is one of the most common performance metrics to evaluate a classification model. In simple terms, it represents the fraction of correct predictions that the model got right as a percentage of the total predictions that are made. It is calculated as the ration between the number of correct predictions over the total number of predictions. *Within everything that has been predicted as a positive, precision counts the percentage that is correct* In case of a binary classification, accuracy can  be calculated in terms of positives and negatives as follows: 
+
 ![image](https://user-images.githubusercontent.com/69470979/188773515-17e431ab-f949-4d26-b0af-f54c2ed73108.png)
+
 Where TP = True Positives, TN = True Negatives, FP = False Positives, and FN = False Negatives. 
 Accuracy may be one of the main evaluation metrics, but it doesn't always tell us the whole truth, specially when  you're working with a class-imbalanced data set where there is a significant disparity between the number of positive and negative labels.
 
   * ***Recall:***
 Recall is the second metric one should look out for after measuring accuracy, since it gives us insight about the model's performance when it comes to the proportion of actual positives that were correctly identified. *Within everything that actually is positive, how many did the model succeed to find.* It is calculated as follows:
+
 ![image](https://user-images.githubusercontent.com/69470979/188773942-663ba216-a1f7-48cf-846f-5ad480e9f4d1.png)
+
 Where TP = True Positives and FN = False Negatives. 
     
   * ***F1 Score:***
