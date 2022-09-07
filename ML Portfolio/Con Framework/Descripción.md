@@ -1,6 +1,6 @@
 This is my portfolio for the Machine Learning Module of my Advanced Artificial Inteligence for Data Science course!
 
-métrica de desempeño (valor logrado sobre el subset de prueba), predicciones de prueba (entradas, valor esperado, valor obtenido
+métrica de desempeño (valor logrado sobre el subset de prueba)
 
 # TASK DESCRIPTION:
 
@@ -264,6 +264,11 @@ In this deliverable I implemented a Machine Learning (ML) classification Algorit
 # QUALITY OF THE PREDICTIONS:
 
   * ***Confusion Matrix:***
+ The confusión matrix is a visual tool that represents the main performance measurements for machine learning classification models where output can be two or more classes. It is a table with 4 different combinations of predicted and actual values:
+ 
+ ![image](https://user-images.githubusercontent.com/69470979/188782222-016e94ed-b638-466f-9303-12629964d824.png)
+
+It is extremely useful to calculate measurements such as: accuracy, precision, recall, specificity and ROC/AUC curves.
 
 # PERFORMANCE METRICS:
   * ***Accuracy:***
@@ -282,8 +287,19 @@ Recall is the second metric one should look out for after measuring accuracy, si
 Where TP = True Positives and FN = False Negatives. 
     
   * ***F1 Score:***
-The F1 score represents an improvement of two simpler performance metrics: precision and recall. In the majority of cases, it is possible to modify a model to increase precision at a cost of a lower recall, or on the other hand increase recall at the cost of lower precision. Therefore, the goal of the F1 Score is to combine both of this metrics into a single one, in order to correctly analize unbalanced data. Hence, the F1 score is defined as the harmonic mean of precision and recall. 
+The F1 score represents an improvement of two simpler performance metrics: precision and recall. In the majority of cases, it is possible to modify a model to increase precision at a cost of a lower recall, or on the other hand increase recall at the cost of lower precision. Therefore, the goal of the F1 Score is to combine both of these metrics into a single one, in order to correctly analize unbalanced data. Hence, the F1 score is defined as the harmonic mean of precision and recall assigning equal weight to Precision and Recall. 
 
+The F1 Score formula is as follows:
+
+![image](https://user-images.githubusercontent.com/69470979/188781423-d621c165-62b4-4b8c-991d-a333910544e8.png)
+
+A model will obtain a high F1 score if both Precision and Recall are high
+A model will obtain a low F1 score if both Precision and Recall are low
+A model will obtain a medium F1 score if one of Precision and Recall is low and the other is high
 
 # GOOGLE COLAB URL:
 https://colab.research.google.com/drive/1ucEgN-YAAssPGy2eJw1gXxcQlkAERKiZ?usp=sharing
+
+# CONCLUSION:
+Looking at the performance metrics analized in this example, both models were very similar and tested very well in precision and recall, meaning that both Tree1 and Tree2 were excelent at predicting when a patient has had a stroke with a 91-out-of-100% precision when it comes to stroke cases. But, unfortunately, the confusiom matrix shows that the data are extremely unbalanced because there are more stroke cases that non-stroke cases in the testing set. Which justifies why the precision for predicting a non-stroke case is under 20% precision. Giving an overall 54% weighted precision which is not an acceptable metric.
+In summary, the training quality was done right because we can see there is a great accuracy level in predicting a stroke in a patient given the chosen features, however it is necessary to improve the testing quality of the model and choose a balanced set to find out what are the real accuracy values for both stroke and non-stroke cases.
