@@ -133,8 +133,22 @@ were:
 
 ## Training Metrics Table:
 
-* FALTA AÑADIR TABLA DE MÉTRICAS POR MODELO
+* **Training Metrics**
+
+| Metric | Model 1 | Model 2 | Model 4 | 
+| ------------- | ------------- | ------------- | ------------- |
+| MSE | 2.29 | 0.80 | 2.97 | 
+| RMSE | 0.84 | 0.54 | 0.89 | 
+| MAE | 0.84 | 0.54 | 0.89 | 
   
+  * **Validation Metrics**
+
+| Metric | Model 1 | Model 2 | Model 4 | 
+| ------------- | ------------- | ------------- | ------------- |
+| MSE | 1.99 | 0.76 | 3.11 | 
+| RMSE | 0.78 | 0.51 | 0.94 | 
+| MAE | 0.78 | 0.51 | 0.94 | 
+
 # QUALITY OF THE PREDICTIONS:
 
 Concerning the MSE, this performance metric shows the square mean of the current errors. While this metric allows to measure the lineal variations on the data, the effect of the square magnifies the errors. Therefore, the furthest data have a heavier effect in the overall assesment result upon the model quality. Hence, the use of the RMSE which decreases the inflation effect by rooting the MSE. This was the case of the 2nd-grade model. Even that both training and validation MSE´s were below 0.9, by square-rooting these values were even lower with a 0.2 difference from the original MSE's, showing a final error (without inflation effect) of 0.51 and 0.54 respectively. These final results, were in fact, a great minimal error value which indicate a high accuracy in the regression model. 
