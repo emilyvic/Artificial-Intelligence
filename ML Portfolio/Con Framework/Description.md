@@ -275,7 +275,7 @@ In this deliverable I implemented a Machine Learning (ML) classification Algorit
 
   | Metric/outcome  | precision | recall | f1-score | support |
   | ------------- | ------------- | ------------- | ------------- |------------- |
-  |0       |0.96      |0.94    |0.95    |     |1423|
+  |0       |0.96      |0.94    |0.95    |     |423|
   |1       |0.14      |0.20    |0.16    |       71|
   |accuracy|          |        |0.90    |    1494|
   |macro avg |0.55    |0.57    |0.56    |    1494|
