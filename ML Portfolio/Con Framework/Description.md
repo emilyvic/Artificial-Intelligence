@@ -271,12 +271,12 @@ In this deliverable I implemented a Machine Learning (ML) classification Algorit
   |weighted avg|  0.92| 0.91   |   0.92  |    1494|
 
 
- ## Training Metrics Table - Entropy Tree:
+ ## Training Metrics Table - Gini Tree:
 
   | Metric/outcome  | precision | recall | f1-score | support |
   | ------------- | ------------- | ------------- | ------------- |------------- |
-  |0       |0.96      |0.94    |0.95    |     |423|
-  |1       |0.14      |0.20    |0.16    |       71|
+  |0       |0.96      |0.94    |0.95    |     423|
+  |1       |0.14      |0.20    |0.16    |      71|
   |accuracy|          |        |0.90    |    1494|
   |macro avg |0.55    |0.57    |0.56    |    1494|
   |weighted avg |0.92 |0.90    |0.91    |    1494|
