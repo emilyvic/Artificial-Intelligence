@@ -130,22 +130,17 @@ were:
   * the ground truth expected value. 
   * The output of the loss function is called the loss which is a measure of how well our model did at predicting the outcome. A high value for the loss means the model performed very poorly. A low value for the loss means our model performed very well.
   *  For the three models implemented, the loss function output was minimun as the initial values of theta were changed in order to minimize the error. 
+
+## Training Metrics Table:
+
+* FALTA AÑADIR TABLA DE MÉTRICAS POR MODELO
   
 # QUALITY OF THE PREDICTIONS:
 
-En lo que respecta al MSE, esta métrica muestra el promedio de los cuadrados de los errores por lo que, aunque esta métrica permite medir el nivel de cambio lineal 
-que ocurre en los datos, el hecho de elevar las diferencias al cuadrado tiende a magnificar/inflar los errores y por ende, datos muy alejados logran impactar 
-mayormente al resultado general. Por tal motivo, se utiliza el RMSE el cuál quita este efecto de inflación al obtener la raíz cuadrada del MSE. Tal fue el caso del 
-modelo de Orden 2 ya que si bien los MSE's de entrenamiento y validación estuvieron por debajo de 0.9, al obtener la métrica de los RMSE's estos valores fueron aún 
-más bajos con una diferencia de 0.2 debido al efecto de la inflación del cuadrado de los errores, el cuál es un margen extremadamente bueno de error. Finalmente, se 
-corroboraron estos valores con la métrica del MAE en la cuál las puntuaciones aumentan linealmente con el error promedio de los valores del error absoluto. Por ende, 
-los valores del MAE coincidieron con los del RMSE lo que quiere decir que independientemente del signo de los errores, estos se encuentrán por debajo de 0.6, 
-lo que indica un alto nivel de precisión en las predicciones. 
+Concerning the MSE, this performance metric shows the square mean of the current errors. While this metric allows to measure the lineal variations on the data, the effect of the square magnifies the errors. Therefore, the furthest data have a heavier effect in the overall assesment result upon the model quality. Hence, the use of the RMSE which decreases the inflation effect by rooting the MSE. This was the case of the 2nd-grade model. Even that both training and validation MSE´s were below 0.9, by square-rooting these values were even lower with a 0.2 difference from the original MSE's, showing a final error (without inflation effect) of 0.51 and 0.54 respectively. These final results, were in fact, a great minimal error value which indicate a high accuracy in the regression model. 
+Finally, this ciphers were compared to the MAE metric, in which scoring tend to increase in a lineal behaviour with the mean error. Subsecuently, the result of this comparison was that both RMSE and MAE were equivalent, which means that regardless of the sign of the errors, the error is below 0.6, indicating a high level of accuracy in the predictions made.
 
-Dentro del contexto del problema, este error es relevante ya que lo que se está intentando predecir es el nivel de alcohol que tiene un vino dadas su nivel de 
-acidez y su pH, y dado que el nivel de alcohol oscila entre un valor de 8 a 14.2 con una desviación estándar de 1.23, es conveniente que nuestro modelo tenga un 
-error mucho menor al valor de desviación estándar para tener una precisión alta y que los valores de alcohol que se obtengan en futuras observaciones sean lo más 
-cercanos a los reales.
+In the context of the problem, this error is relevant in the way that is 0.6 trustfull in predicting the alchohol level of a particular wine given it´s acidity and pH. Knowing that the alcohol level oscilates between 8-14.2 with a standard deviation of 1.23. The confidence level in the model can be justified upon the fact that the MSE value is less than the standard deviation. Thus, accuracy level can be considered as HIGH and that may guarantee that future observations and testing may be as closer to the actual values we are trying to predict.  
 
 # PERFORMANCE METRICS:
   * ***MSE (Mean Square Error):***
@@ -165,3 +160,4 @@ cercanos a los reales.
     Absolute Error is the amount of error in your measurements. Is the mean of the absolute values of the individual prediction errors on over all instances in the test set. Each prediction error is the difference between the true value and the predicted value for the instance.
 
 # GOOGLE COLAB URL:
+https://colab.research.google.com/drive/1mR6XGK0iJwqSNgVdJQ8ejnUG2dT3PMeP?usp=sharing
