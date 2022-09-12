@@ -260,7 +260,43 @@ In this deliverable I implemented a Machine Learning (ML) classification Algorit
 
 # TRAINING QUALITY:
 
+ ## Training Metrics Table - Entropy Tree:
  
+  | Metric/outcome  | precision | recall | f1-score | support |
+  | ------------- | ------------- | ------------- | ------------- |------------- |
+  | 0    |   0.96   |   0.95   |   0.96  |    1423|
+  | 1    |   0.13   |   0.14   |   0.14  |      71|
+  |accuracy |       |          |   0.91  |    1494|
+  |macro avg  |0.54 |   0.55   |   0.55  |    1494|
+  |weighted avg|  0.92| 0.91   |   0.92  |    1494|
+
+
+ ## Training Metrics Table - Entropy Tree:
+
+  | Metric/outcome  | precision | recall | f1-score | support |
+  | ------------- | ------------- | ------------- | ------------- |------------- |
+  |0       |0.96      |0.94    |0.95    |     |1423|
+  |1       |0.14      |0.20    |0.16    |       71|
+  |accuracy|          |        |0.90    |    1494|
+  |macro avg |0.55    |0.57    |0.56    |    1494|
+  |weighted avg |0.92 |0.90    |0.91    |    1494|
+
+
+## Validation Metrics Table:
+
+* **Validation Metrics - K-Folds**
+
+| Model | Accuracy | Precision | Recall | F1 Score | 
+| ------------- | ------------- | ------------- | ------------- |------------- |
+| Entropy Tree | 0.911918 | 0.229286 | 0.41 | 0.281919 |
+| Gini Tree | 0.919959 | 0.270952 |  0.39 | 0.293571 |
+  
+* **Validation Metrics - Cross Validation**
+
+| Model | Accuracy | Precision | Recall | F1 Score | 
+| ------------- | ------------- | ------------- | ------------- |------------- |
+| Entropy Tree | 0.919959 | 0.2350 | 0.34 | 0.266905 |
+| Gini Tree | 0.903878 | 0.2125 |  0.39 | 0.240794 |
   
 # QUALITY OF THE PREDICTIONS:
 
