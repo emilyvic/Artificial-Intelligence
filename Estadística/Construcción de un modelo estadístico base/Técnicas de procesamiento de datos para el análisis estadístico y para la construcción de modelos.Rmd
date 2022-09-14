@@ -1,0 +1,978 @@
+---
+title: " Técnicas de procesamiento de datos para el análisis estadístico y para la construcción de modelos"
+author: "Emilia Victoria Jácome Iñiguez"
+date: "2022-09-05"
+output: html_document
+---
+
+La contaminación por mercurio de peces en el agua dulce comestibles es una amenaza directa contra nuestra salud. Se llevó a cabo un estudio reciente en 53 lagos de Florida con el fin de examinar los factores que influían en el nivel de contaminación por mercurio. Las variables que se midieron se encuentran en mercurio.csv  
+
+Alrededor de la principal pregunta de investigación que surge en este estudio: 
+# 0. Pregunta Base:
+¿Cuáles son los principales factores que influyen en el nivel de contaminación por mercurio en los peces de los lagos de Florida? 
+pueden surgir preguntas paralelas que desglosan esta pregunta general:
+
+¿Hay evidencia para suponer que la concentración promedio de mercurio en los lagos es dañino para la salud humana? 
+
+Considera que las normativas de referencia para evaluar los niveles máximos de Hg (Reglamento 34687-MAG y los reglamentos internacionales CE 1881/2006 y Codex Standard 193-1995) establecen que la concentración promedio de mercurio en productos de la pesca no debe superar los 0.5 mg de Hg/kg.
+
+¿Habrá diferencia significativa entre la concentración de mercurio por la edad de los peces?
+
+Si el muestreo se realizó lanzando una red y analizando los peces que la red encontraba ¿Habrá influencia del número de peces encontrados en la concentración de mercurio en los peces?
+
+¿Las concentraciones de alcalinidad, clorofila, calcio en el agua del lago influyen en la concentración de mercurio de los peces?
+
+# 1. EXPLORACIÓN DE LA BASE DE DATOS
+## Accede a la base de datos de las mediciones del estudio de Mercurio en los lagos de Florida: Aquí  Descargar Aquí. 
+```{r}
+df=read.csv("mercurio.csv") #leer la base de datos
+df
+```
+##Explora las variables y familiarizate con su significado.
+
+La descripción de cada variable es la siguiente: 
+
+X1 = número de indentificación
+X2 = nombre del lago
+X3 = alcalinidad (mg/l de carbonato de calcio)
+X4 = PH
+X5 = calcio (mg/l)
+X6 = clorofila (mg/l)
+X7 = concentración media de mercurio (parte por millón) en el tejido muscular del grupo de peces estudiados en cada lago
+X8 = número de peces estudiados en el lago
+X9 = mínimo de la concentración de mercurio en cada grupo de peces
+X10 = máximo de la concentración de mercurio en cada grupo de peces
+X11 = estimación (mediante regresión) de la concentración de mercurio en el pez de 3 años (o promedio de mercurio cuando la edad no está disponible)
+X12 = indicador de la edad de los peces (0: jóvenes; 1: maduros)
+
+###Identifica la cantidad de datos y variables presentes.
+```{r}
+n_col =length(df)
+print(paste("La cantidad de columnas es: ", n_col))
+n = nrow(df) 
+print(paste("La cantidad de datos es de: ", n))
+
+```
+
+###Clasifica las variables de acuerdo a su tipo y escala de medición.
+```{r}
+str(df)
+```
+
+```{r}
+#Set de variables numéricas
+df_num = df[,c(-1,-2, -12)]
+
+#Set de variable categóricas
+df_cat = df[,c(1,2,12)]
+```
+
+##Exploración de la base de datos - Medidas estadísticas
+### Variables cuantitativas
+####Medidas de tendencia Central
+```{r}
+summary(df)
+```
+#### Cálculo de moda para cada variable
+```{r}
+#install.packages("modeest") 
+library(modeest)
+apply(df[,c(-1,-2)], 2, mlv,  method = "mfv")
+#Se quitaron las primeras variables ya que no aportan información para la moda, ya que cada una es única.
+```
+
+####Medidas de Dispersión
+```{r}
+print(paste("Desviación estandár X3: ", sd(df$X3)))
+print(paste("Varianza X3: ", var(df$X3)))
+print(paste("Rango X3: ", diff(range(df$X3))))
+
+print(paste("Desviación estandár X4: ", sd(df$X4)))
+print(paste("Varianza X4: ", var(df$X4)))
+print(paste("Rango X4: ", diff(range(df$X4))))
+
+print(paste("Desviación estandár X5: ", sd(df$X5)))
+print(paste("Varianza X5: ", var(df$X5)))
+print(paste("Rango X5: ", diff(range(df$X5))))
+
+print(paste("Desviación estandár X6: ", sd(df$X6)))
+print(paste("Varianza X6: ", var(df$X6)))
+print(paste("Rango X6: ", diff(range(df$X6))))
+
+print(paste("Desviación estandár X7: ", sd(df$X7)))
+print(paste("Varianza X7: ", var(df$X7)))
+print(paste("Rango X7: ", diff(range(df$X7))))
+
+print(paste("Desviación estandár X8: ", sd(df$X8)))
+print(paste("Varianza X8: ", var(df$X8)))
+print(paste("Rango X8: ", diff(range(df$X8))))
+
+print(paste("Desviación estandár X9: ", sd(df$X9)))
+print(paste("Varianza X9: ", var(df$X9)))
+print(paste("Rango X9: ", diff(range(df$X9))))
+
+print(paste("Desviación estandár X10: ", sd(df$X10)))
+print(paste("Varianza X10: ", var(df$X10)))
+print(paste("Rango X10: ", diff(range(df$X10))))
+
+print(paste("Desviación estandár X11: ", sd(df$X11)))
+print(paste("Varianza X11: ", var(df$X11)))
+print(paste("Rango X11: ", diff(range(df$X11))))
+
+print(paste("Desviación estandár X12: ", sd(df$X12)))
+print(paste("Varianza  X12: ", var(df$X12)))
+print(paste("Rango X12: ", diff(range(df$X12))))
+```
+###Variables cualitativas
+####Tabla de distribución de frecuencia
+```{r}
+print("Tabla de frecuencias para la variable X2 (Nombre de Lago)")
+table(df$X2)
+```
+```{r}
+print("Tabla de frecuencias para la variable X12 (Edad de clasificación de los peses 0: Jóvenes, 1: Adultos)")
+table(df$X12)
+```
+
+###Moda
+```{r}
+plot(table(df$X2), main ="Nombre del Lago") 
+plot(table(df$X12), main ="Edad de los peces")
+```
+Se puede ver que para la variable X2 (Nombre de Lago) no existe un valor de moda ya que todos los valores son únicos y diferentes haciendo referencia a cada lago en estudio, mientras que para la variable X12, está muy claro por la gráfica que la moda que predomina en la mayoría de lagos, son los peces adultos.
+
+##Explora los datos usando herramientas de visualización
+###Variables cuantitativas:
+```{r}
+col = df$X3
+# Para columna X3
+cuartiles_X3 = quantile(col, c(0.25, 0.5, 0.75), type = 6);
+
+par(mfrow=c(2,1)) #Matriz de gráficos de 12x2
+boxplot(col, col="skyblue", horizontal = TRUE, frame.plot=F, main = "X3")
+value = quantile(col,0.75)+sd(col)
+abline(v=value,col="red") #linea vertical en el límite de los datos atípicos
+
+```
+```{r}
+col = df$X4
+# Para columna X4
+cuartiles_X4 = quantile(col, c(0.25, 0.5, 0.75), type = 6);
+
+par(mfrow=c(2,1)) #Matriz de gráficos de 12x2
+boxplot(col, col="skyblue", horizontal = TRUE, frame.plot=F, main = "X4")
+value = quantile(col,0.75)+sd(col)
+abline(v=value,col="red") #linea vertical en el límite de los datos atípicos
+
+```
+```{r}
+col = df$X5
+# Para columna X5
+cuartiles_X5 = quantile(col, c(0.25, 0.5, 0.75), type = 6);
+
+par(mfrow=c(2,1)) #Matriz de gráficos de 12x2
+boxplot(col, col="skyblue", horizontal = TRUE, frame.plot=F, main = "X5")
+value = quantile(col,0.75)+sd(col)
+abline(v=value,col="red") #linea vertical en el límite de los datos atípicos
+
+```
+```{r}
+col = df$X6
+# Para columna X6
+cuartiles_X6 = quantile(col, c(0.25, 0.5, 0.75), type = 6);
+
+par(mfrow=c(2,1)) #Matriz de gráficos de 12x2
+boxplot(col, col="skyblue", horizontal = TRUE, frame.plot=F, main = "X6")
+value = quantile(col,0.75)+sd(col)
+abline(v=value,col="red") #linea vertical en el límite de los datos atípicos
+
+```
+```{r}
+col = df$X7
+# Para columna X7
+cuartiles_X7 = quantile(col, c(0.25, 0.5, 0.75), type = 6);
+
+par(mfrow=c(2,1)) #Matriz de gráficos de 12x2
+boxplot(col, col="skyblue", horizontal = TRUE, frame.plot=F, main = "X7")
+value = quantile(col,0.75)+sd(col)
+abline(v=value,col="red") #linea vertical en el límite de los datos atípicos
+
+```
+```{r}
+col = df$X8
+# Para columna X8
+cuartiles_X8 = quantile(col, c(0.25, 0.5, 0.75), type = 6);
+
+par(mfrow=c(2,1)) #Matriz de gráficos de 12x2
+boxplot(col, col="skyblue", horizontal = TRUE, frame.plot=F, main = "X8")
+value = quantile(col,0.75)+sd(col)
+abline(v=value,col="red") #linea vertical en el límite de los datos atípicosquantile(df$X8, c(0.25, 0.5, 0.75), type = 6);
+```
+```{r}
+col = df$X9
+# Para columna X9
+cuartiles_X9 = quantile(col, c(0.25, 0.5, 0.75), type = 6);
+
+par(mfrow=c(2,1)) #Matriz de gráficos de 12x2
+boxplot(col, col="skyblue", horizontal = TRUE, frame.plot=F, main = "X9")
+value = quantile(col,0.75)+sd(col)
+abline(v=value,col="red") #linea vertical en el límite de los datos atípicosquantile(df$X8, c(0.25, 0.5, 0.75), type = 6);
+
+```
+```{r}
+col = df$X10
+# Para columna X10
+cuartiles_X10 = quantile(col, c(0.25, 0.5, 0.75), type = 6);
+
+par(mfrow=c(2,1)) #Matriz de gráficos de 12x2
+boxplot(col, col="skyblue", horizontal = TRUE, frame.plot=F, main = "X10")
+value = quantile(col,0.75)+sd(col)
+abline(v=value,col="red")
+
+```
+```{r}
+col = df$X11
+# Para columna X11
+cuartiles_X11 = quantile(col, c(0.25, 0.5, 0.75), type = 6);
+
+par(mfrow=c(2,1)) #Matriz de gráficos de 12x2
+boxplot(col, col="skyblue", horizontal = TRUE, frame.plot=F, main = "X11")
+value = quantile(col,0.75)+sd(col)
+abline(v=value,col="red") #linea vertical en el límite de los datos atípicosquantile(df$X8, c(0.25, 0.5, 0.75), type = 6);
+
+```
+####Análisis de distribución de los datos (Histogramas). Identificar si tiene forma simétrica o asimétrica
+```{r}
+hist(df$X3)
+Q1 = cuartiles_X3[1]
+Q2 = cuartiles_X3[2]
+Q3 = cuartiles_X3[3]
+library(ggplot2)
+ggplot(data = df, aes(x=X3)) +
+    geom_histogram(bins = 10) + 
+    geom_vline(aes(xintercept = Q1,
+                  color = "Q1"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q2,
+                  color = "Q2"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q3,
+                  color = "Q3"),
+              linetype = "dashed",
+              size = 1) +  
+  labs(title = "Histograma de X3",subtitle =  paste("Cuartil 1 al 25% = ",Q1, ", Cuartil 2 al 50% = ",Q2, ", Cuartil 3 al 75% = ",Q3))
+```
+El histograma para la variable X3, tiene forma asimétrica
+
+```{r}
+hist(df$X4)
+Q1 = cuartiles_X4[1]
+Q2 = cuartiles_X4[2]
+Q3 = cuartiles_X4[3]
+ggplot(data = df, aes(x=X4)) +
+    geom_histogram(bins = 7) + 
+    geom_vline(aes(xintercept = Q1,
+                  color = "Q1"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q2,
+                  color = "Q2"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q3,
+                  color = "Q3"),
+              linetype = "dashed",
+              size = 1) +  
+  labs(title = "Histograma de X4",subtitle =  paste("Cuartil 1 al 25% = ",Q1, ", Cuartil 2 al 50% = ",Q2, ", Cuartil 3 al 75% = ",Q3))
+```
+El histograma para la variable X4, tiene forma asimétrica
+
+```{r}
+hist(df$X5)
+Q1 = cuartiles_X5[1]
+Q2 = cuartiles_X5[2]
+Q3 = cuartiles_X5[3]
+ggplot(data = df, aes(x=X5)) +
+    geom_histogram(bins = 10) + 
+    geom_vline(aes(xintercept = Q1,
+                  color = "Q1"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q2,
+                  color = "Q2"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q3,
+                  color = "Q3"),
+              linetype = "dashed",
+              size = 1) +  
+  labs(title = "Histograma de X5",subtitle =  paste("Cuartil 1 al 25% = ",Q1, ", Cuartil 2 al 50% = ",Q2, ", Cuartil 3 al 75% = ",Q3))
+```
+El histograma para la variable X5, tiene forma asimétrica
+
+```{r}
+hist(df$X6)
+Q1 = cuartiles_X6[1]
+Q2 = cuartiles_X6[2]
+Q3 = cuartiles_X6[3]
+ggplot(data = df, aes(x=X6)) +
+    geom_histogram(bins = 8) + 
+    geom_vline(aes(xintercept = Q1,
+                  color = "Q1"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q2,
+                  color = "Q2"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q3,
+                  color = "Q3"),
+              linetype = "dashed",
+              size = 1) +  
+  labs(title = "Histograma de X6",subtitle =  paste("Cuartil 1 al 25% = ",Q1, ", Cuartil 2 al 50% = ",Q2, ", Cuartil 3 al 75% = ",Q3))
+```
+El histograma para la variable X6, tiene forma asimétrica
+
+```{r}
+hist(df$X7)
+Q1 = cuartiles_X7[1]
+Q2 = cuartiles_X7[2]
+Q3 = cuartiles_X7[3]
+ggplot(data = df, aes(x=X6)) +
+    geom_histogram(bins = 8) + 
+    geom_vline(aes(xintercept = Q1,
+                  color = "Q1"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q2,
+                  color = "Q2"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q3,
+                  color = "Q3"),
+              linetype = "dashed",
+              size = 1) +  
+  labs(title = "Histograma de X7",subtitle =  paste("Cuartil 1 al 25% = ",Q1, ", Cuartil 2 al 50% = ",Q2, ", Cuartil 3 al 75% = ",Q3))
+```
+El histograma para la variable X7, tiene forma asimétrica
+```{r}
+hist(df$X8)
+Q1 = cuartiles_X8[1]
+Q2 = cuartiles_X8[2]
+Q3 = cuartiles_X8[3]
+ggplot(data = df, aes(x=X9)) +
+    geom_histogram(bins = 10) + 
+    geom_vline(aes(xintercept = Q1,
+                  color = "Q1"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q2,
+                  color = "Q2"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q3,
+                  color = "Q3"),
+              linetype = "dashed",
+              size = 1) +  
+  labs(title = "Histograma de X8",subtitle =  paste("Cuartil 1 al 25% = ",Q1, ", Cuartil 2 al 50% = ",Q2, ", Cuartil 3 al 75% = ",Q3))
+```
+El histograma para la variable X8, tiene forma asimétrica
+
+
+```{r}
+hist(df$X9)
+Q1 = cuartiles_X9[1]
+Q2 = cuartiles_X9[2]
+Q3 = cuartiles_X9[3]
+ggplot(data = df, aes(x=X9)) +
+    geom_histogram(bins = 10) + 
+    geom_vline(aes(xintercept = Q1,
+                  color = "Q1"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q2,
+                  color = "Q2"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q3,
+                  color = "Q3"),
+              linetype = "dashed",
+              size = 1) +  
+  labs(title = "Histograma de X9",subtitle =  paste("Cuartil 1 al 25% = ",Q1, ", Cuartil 2 al 50% = ",Q2, ", Cuartil 3 al 75% = ",Q3))
+```
+El histograma para la variable X9, tiene forma asimétrica
+
+```{r}
+hist(df$X10)
+Q1 = cuartiles_X10[1]
+Q2 = cuartiles_X10[2]
+Q3 = cuartiles_X10[3]
+ggplot(data = df, aes(x=X10)) +
+    geom_histogram(bins = 5) + 
+    geom_vline(aes(xintercept = Q1,
+                  color = "Q1"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q2,
+                  color = "Q2"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q3,
+                  color = "Q3"),
+              linetype = "dashed",
+              size = 1) +  
+  labs(title = "Histograma de X10",subtitle =  paste("Cuartil 1 al 25% = ",Q1, ", Cuartil 2 al 50% = ",Q2, ", Cuartil 3 al 75% = ",Q3))
+```
+El histograma para la variable X10, tiene forma asimétrica
+
+```{r}
+hist(df$X11)
+Q1 = cuartiles_X11[1]
+Q2 = cuartiles_X11[2]
+Q3 = cuartiles_X11[3]
+ggplot(data = df, aes(x=X10)) +
+    geom_histogram(bins = 8) + 
+    geom_vline(aes(xintercept = Q1,
+                  color = "Q1"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q2,
+                  color = "Q2"),
+              linetype = "dashed",
+              size = 1) +
+    geom_vline(aes(xintercept = Q3,
+                  color = "Q3"),
+              linetype = "dashed",
+              size = 1) +  
+  labs(title = "Histograma de X11",subtitle =  paste("Cuartil 1 al 25% = ",Q1, ", Cuartil 2 al 50% = ",Q2, ", Cuartil 3 al 75% = ",Q3))
+```
+El histograma para la variable X11, tiene forma asimétrica
+
+###Variables categóricas
+####Distribución de los datos (diagramas de barras, diagramas de pastel)
+
+```{r}
+# Tabla de frecuencias
+mi_tabla <- table(df$X12)
+
+pie(mi_tabla, main ="Diagrama de Pastel para Edad de Peces")
+
+# Gráfico de barras de frecuencia absoluta
+barplot(mi_tabla, main = "Frequencia absoluta Edad Peces",
+        col = rainbow(3))
+```
+```{r}
+tabla_edad <- table(df$X2)
+
+pie(tabla_edad,  main ="Diagrama de Pastel para Nombre de Lago")
+
+# Gráfico de barras de frecuencia absoluta
+barplot(tabla_edad, main = "Frequencia absoluta Nombre de Lago",
+        col = rainbow(3))
+
+```
+## Explora la correlación entre las variables. 
+Identifica cuáles son las correlaciones más fuertes y qué sentido tiene relacionarlas.
+```{r}
+#install.packages("corrplot") 
+library(corrplot)
+
+C = cor(df[,c(-1,-2)])
+#Se quitan las primeras dos variables del análisis ya que únicamente tienen propósitos de identificación de cada dato.
+corrplot(C, method = 'number')
+```
+A partir de la matriz de correlación, se puede ver que las variables que tienen las correlaciones más fuertes corresponden a:
+* X11 y X7: 0.96
+* X9 y X7: 0.93
+* X10 y X7: 0.92
+* X11 y X10: 0.86
+* X3 y X5: 0.83
+* X10 y X9: 0.77
+* X3 y X11: -0.63
+* X4 y X11: -0.61
+* X3 y X10: -0.60
+
+X3 = alcalinidad (mg/l de carbonato de calcio)
+X4 = pH
+X5 = calcio (mg/l)
+X7 = concentración media de mercurio (parte por millón) en el tejido muscular del grupo de peces estudiados en cada lago
+X9 = mínimo de la concentración de mercurio en cada grupo de peces
+X10 = máximo de la concentración de mercurio en cada grupo de peces
+X11 = estimación (mediante regresión) de la concentración de mercurio en el pez de 3 años (o promedio de mercurio cuando la edad no está disponible)
+
+Tiene sentido analizar la relación entre la cantidad de calcio (X5) con la alcalinidad (X3).
+Tiene sentido analizar la relación entre el nivel de alcalinidad (X3) con la concentración de mercurio en el pez de 3 años (X11)
+Tiene sentido analizar la relación entre el nivel de pH (X4) con la concentración de mercurio en el pez de 3 años (X11)
+Tiene sentido analizar la relación entre el nivel de alcalinidad (X3) con el máximo de concentración de mercurio en cada grupo de peces (X10).
+
+No tiene sentido analizar la concentración media de mercurio (X7) con el máximo de concentración de mercurio en cada grupo de peces (X10).
+No tiene sentido analizar la concentración media de mercurio (X7) con el mínimo de concentración de mercurio en cada grupo de peces (X9).
+No tiene sentido analizar el máximo de concentracón de mercurio (X10) con el mínimo de concentración de mercurio (X19). 
+No tiene sentido analizar la relación entre la estimación de la concentración de mercurio en el pez de 3 años (X11) con la concentración media en el tejido muscular (X7).
+No tiene sentido analizar la relación entre la estimación de la concentración de mercurio en el pez de 3 años (X11) con el máximo de concentración de mercurio en cada grupo de peces (X10). 
+
+# 2. ANALIZA LOS DATOS Y PREGUNTA BASE
+
+## 1. De acuerdo con la pregunta base, contempla la herramienta estadística necesaria para contestarla y justifica su elección.
+La herramienta estadística necesaria para poder contestar la pregunta base es  una regresión lineal múltiple en donde se pueda analizar a mayor profundidad la relación lineal entre los factores propuestos sobre el nivel de contaminación de mercurio en los peces de los lagos de Florida para saber si realmente son significativas para determinar el nivel de contaminación de mercurio cada lago. De acuerdo a la matriz de correlación elaborada en el inciso anterior, se determinó que las dos variables que tenían mayor relación con la concentración media de mercurio en los peces (variable X7) fueron precisamente la Estimación de Mercurio en el lago (X11), el mínimo de concentración (X9) y el máximo de concentración (X10). No obstante, también se observa un fuerte grado de correlación entre estas 3 variables por lo que, es necesario seleccionar una de ellas para la propuesta del modelo ya que, de lo contrario, no se estará cumpliendo con el primer supuesto de validez del modelo. De igual manera, se descartarán las variables X5 y X4 ya que mantienen una fuerte correlación con X3, siendo esta la segunda variable con mayor correlación con respecto a X7, depués de haber descartado X9 y X10. 
+Adicionalmente, se utilizará la herramienta de pruebas de hipótesis para analizar y evaluar si eventualmente, se está cumpliendo todas las condiciones para justificar la validez del modelo propuesto y, de esa manera reafirmar la relación encontrada entre las variables al presentar características similares a las de una distribución normal. 
+
+## 2. Aplicación de la herramienta estadística.
+
+### 1. Análisis de Correlación de las variables
+#### Matriz de Correlación y valores de probabilidad
+```{r}
+#install.packages(psych)
+library(psych)
+
+Rc = corr.test(df_num)
+Rc
+```
+A partir de los valores-p entre las variables, se puede determinar que las más significativas con respecto a la concentración media de mercurio en los peces (X7) son:
+* X3: Alcalinidad
+* X4: pH
+* X5: Calcio
+* X6: Clorofila
+* X9: Mínimo de Concentración de Mercurio en el grupo de peces
+* X10: Máximo de Concentración de Mercurio en el grupo de peces
+* X11: Estimación de la concentración de mercurio en el grupo de peces.
+
+#### Histogramas
+```{r}
+library(psych)
+multi.hist(x = df_num, dcol = c("blue", "red"), dlty = c("dotted", "solid"),
+           main = "")
+```
+
+
+#### Graficar visualmente las correlaciones
+```{r}
+library(GGally)
+
+ggpairs(df_num, lower=list(continuos="smooth"), diag = list(continuos="barDiag"), axisLabels="none")
+```
+A partir de la gráfica superior, se puede ver de manera visual la dispersión de los datos en la relación de cada combinación de variables. Por lo que se puede ver una tendencia lineal positiva muy marcada entre X7 y X9 (Mínimo de concentración en los peces del lago), seguida de la tendencia de relación X7-X10 (Máximo de concentración en los peces del lago) y X7-X11 (Estimaciónj de concentración en los peces del lago). Al contrario, se observa gráficos donde claramente no existe una tendencia marcada entre las variables, como son las relaciones: X7-X8 (Número de peces en el lago), X7-X5 (Nivel de Calcio en el lago) y X7-X6 (Nivel de clorofila en el lago).
+
+De igual manera, existen relaciones donde se aprecia una leve tendencia, no muy marcada entre los datos como son los casos de: X7-X3 (Alcalinidad en el lago) y X7-X4 (pH en el lago).
+
+### Análisis del Modelo propuesto
+Seleccionar solo variables independientes entre si.
+```{r}
+modelo = lm(df_num$X7~df_num$X3+df_num$X6+df_num$X8+df_num$X11, data=df_num)
+summary(modelo)
+```
+El modelo con las variables predictoras de (X3, X6, X8 y X11) tiene un R2 alta (0.9232),lo que quiere decir que es capaz de explicar el 92,32% de la variabilidad observada en la contaminación de mercurio en los peces de los lagos de Florida. El p-value del modelo es significativo (2.2e-16) por lo que se puede aceptar que el modelo no se construyó aleatoriamente.Esto se debe a que, al menos uno de los coeficientes parciales de regresión es distinto de 0. Muchos de ellos no son significativos, lo que es un indicativo de que podrían no contribuir al modelo.
+
+#### Selección de los mejores predictores
+Se utilizará la estrategia de stepwise mixto y el parámetro de Akaike(AIC) para evaluar la calidad del modelo.
+```{r}
+step(object = modelo, direction = "both", trace = 1)
+```
+Por ende, el mejor modelo fue aquel que presentó el mayor valor de AIC con tan solo una variable predictora (X11Q). Sin embargo, tras observar las dos últimas iteraciones, se puede denotar que hay una diferencia mínima (de 0.01 en el AIC) entre el penúltimo modelo y el último modelo. Dado que este último modelo solo tuvo una variable predictoria, se va a proceder a seleccionar el penúltimo modelo, considerando que la diferencia entre ambos es despreciable. Por consiguiente, el conjunto de predictores resultante del proceso ha sido:
+```{r}
+modelo = lm(formula =df_num$X7 ~ df_num$X11 + df_num$X8, data = df_num)
+summary(modelo)
+```
+Con la variable predictoras: 
+* X11: Estimación de la concentración de mercurio en cada grupo de peces
+* X8: Cantidad de peces en el lago.
+
+#### Intervalos de confianza para cada coeficiente parcial de regresión
+```{r}
+confint(modelo)
+```
+Cada una de las pendientes de un modelo de regresión lineal múltiple (mayormnente conocidos como coeficientes parciales de regresión de los predictores) se define del siguiente modo: Si el resto de variables se mantienen constantes, por cada unidad que aumenta el predictor en cuestión, la variable (Y) varía en promedio tantas unidades como indica la pendiente. 
+
+Por cada unidad que aumenta el predictor X8 (Número de peces en el lago), la concentración media de mercurio en los peces del lago aumenta en promedio 0.00216406 unidades, manteniéndose constantes el resto de predictores.
+
+Por cada unidad que aumenta el predictor X11 (Estimación de la concentración promedio de mercurio en el lago), la concentración media de mercurio en los peces del lago aumenta en promedio 0.96433457 unidades, manteniéndose constantes el resto de predictores.
+
+## 3. Valida el modelo obtenido analizando los supuestos requeridos por el modelo.
+###Verifica que β̂i sea significativa con un alfa de 0.05.
+H0 = β̂i no es significativa.
+H1 = β̂i es significativa.
+
+Obtener el summary de ambas correlaciones
+```{r}
+#Para obtener t estrella
+summary(modelo)
+te_X8 = 1.384
+te_X11 = 24.406
+
+pvalue_H = 2.2e-16
+```
+Obtener t_0 con tstudent
+```{r}
+alpha = 0.05
+t_0 =qt(alpha/2,n-2)
+print(t_0)
+```
+#### Interpretación en el contexto del problema:
+
+Se rechaza la hipótesis nula H0 ya que:
+En primera instancia, los valores de t_estrella de cada predictor son mayores al valor de t_0. 
+En segunda instancia, los valores-p obtenidos son menores a alpha (0.05)
+
+Por lo tanto, se puede llegar a la conclusión de que los valores de β̂i si son significativos, es decir que todos tienen un valor distinto de 0 y que, por lo tanto, sí son relevantes para el análisis y cómo supera el valor de alpha, se extiende de la región de aceptación de la hipótesis nula, por lo tanto, se deberá rechazarla.
+
+Dentro del contexto del problema, los valores de β̂i son la tasa de cambio a la que varía la concentración de Mercurio en los peces del lago en función de cada una de las variables predictoras, respectivamente. Por ende, se sabe que sí existe una relación de dependencia lineal entre las variables y que dicha relación es constante y diferente de 0 ya que la recta es la de mejor ajuste porque supera el nivel de significancia de alpha. Entonces, dicho modelo representa correctamente la relación entre las variables. No necesariamente indica causalidad, pero sí relación entre las variables.
+
+### No colinealidad de xi
+Relación lineal entre los predictores numéricos y la variable respuesta:
+```{r}
+library(ggplot2)
+library(gridExtra)
+plot1 <- ggplot(data = df_num, aes(X8, modelo$residuals)) +
+    geom_point() + geom_smooth(color = "firebrick") + geom_hline(yintercept = 0) +
+    theme_bw()
+
+plot2 <- ggplot(data = df_num, aes(df_num$X11, modelo$residuals)) +
+    geom_point() + geom_smooth(color = "firebrick") + geom_hline(yintercept = 0) +
+    theme_bw()
+grid.arrange(plot1, plot2)
+```
+En esta gráfica se está observando la dispersión entre cada uno de los predictores con los residuos del modelo planteado.
+Para cumplir con este primer supuesto, los residuos deberán distribuirse de manera aleatoria alrededor de 0 y demostrando una variabilidad constante a lo largo del eje X. Por lo que, ambos predictores cumplen esta condición. Si bien el gráfico para el predictor X8, está muy concentrada en el primer tramo, sus residuos no muestran ninguna tendencia definida. Por lo que no se puede concluir que no existe linealidad en todos los predictores.
+
+## No multicolinialidad:
+
+```{r}
+library(corrplot)
+corrplot(cor(dplyr::select(df_num, X8, X11)),
+         method = "number", tl.col = "black")
+```
+Evidentemente no existe una correlación alta entre las variables predictoras X8 y X11.Dentro del contexto del problema, esto significa que no existe una relación lineal de dependencia entre el la cantidad de peces en el largo y la estimación de concentración media de mercurio en el lago, es decir, que la concentración estimada de contaminación es totalmente independiente de la cantidad de peces que exista en el lago. Por ende, se está cumpliendo el supuesto de no-colinialidad.
+
+#### Análisis de Inflación de Varianza (VIF):
+```{r}
+library(car)
+vif(modelo)
+```
+Existe un bajo nivel de varianza en las variables predictoras lo que indica una intensidad baja, casi nula, de multicolinealidad. Dentro del contexto del problema, esto significa que dichos coeficientes se incrementan en un promedio de 1 punto a causa de la colinealidad.
+
+#### Autocorrelación:
+```{r}
+library(car)
+dwt(modelo, alternative = "two.sided")
+```
+No hay evidencia de autocorrelación, por lo tanto, hay independencia entre las observaciones.
+
+#### Tamaño de la muestra:
+```{r}
+print(paste("La cantidad de datos es de: ", n))
+print("La cantidad de predictores es de: 4")
+```
+Aunque no exista un criterio establecido para el número mínimo de observaciones, para prevenir que una variable resulte muy influyente cuando realmente no lo es, se recomienda que la cantidad de observaciones sea entre 10 y 20 veces el número de predictores. En este caso debería haber como mínimo 40 observaciones y se dispone de 53 por lo que es apropiado.
+
+##Economía de las variables: Coeficiente de Determinación
+
+```{r}
+summary(modelo)
+```
+Analizando el valor del coeficiente de determinación, se puede ver que el modelo se ajusta casi perfectamente a las observaciones reales ya que su valor oscila dentro del rango de correlaciones extremadamente fuertes, por lo que se puede considerar como un excelente modelo para describir los datos. Además, se realizó un proceso previo de selección de modelo aplicando la estrategia de stepwise mixto con el parámetro de Akaike para seleccionar las variables predictoras más influyentes que tuvieran el nivel de significancia más elevado, por lo que se puede justificar el alto nivel del coeficiente de determinación, por encima de 0.90.
+
+###Análisis de los residuos
+
+#### Normalidad de los residuos 
+##### 1) Hipótesis
+H0 = Los datos provienen de una población normal.
+H1 = Los datos no provienen de una problación normal.
+
+##### 2) Regla de Desición
+Se rechaza H0 si valor p < α
+
+##### 3) Análisis del Resultado
+Distribución normal de los residuos:
+```{r}
+qqnorm(modelo$residuals)
+qqline(modelo$residuals)
+```
+El comportamiento de esta gráfica de probabildad normal presenta una distribución con colas gruesas la cual posee una baja curtosis en forma de una distribución Platicúrtica. Los residuos en efecto, se comportan como una distribución normal ya que se ajustan casi perfectamente a una línea recta y tienen una tendencia creciente. De igual manera, se procedió a graficar un histograma de frecuencias para observar la distribución de la data.
+
+```{r}
+hist(modelo$residuals)
+lines(density(modelo$residual),col="red")
+curve(dnorm(x,mean=mean(modelo$residuals)
+,sd=sd(modelo$residuals)), add=TRUE, col="blue",lwd=2)
+
+```
+En este histograma, se puede verificar claramente que la mayor agrupación de los datos está en el centro de la distribución y la menor proporción de los datos se encuentra en los extremos, por ende, se asemeja a una distribución normal.
+
+```{r}
+shapiro.test(modelo$residuals)
+```
+##### 4) Conclusión
+El valor p de los residuos es menor al valor de alpha establecido (0.05), por lo que, se procede a rechazar la hipótesis nula H0.
+Las gráficas de qq-plot y el histograma de distribución encontraron que los datos tienen simetría con un leve sesgo a la izquierda y que la mayor parte de los datos está concentrada en la mitad y se ajustan en su mayoría al modelo propuesto. De hecho, el histograma muestra claramente que la densidad de datos sigue una campana casi simétrica donde la mayor frecuencia de datos se ubica en torno a la media y la menor distribución se encuentra en los extremos. De modo que, se indica que los residuos no siguen una distribución normal.
+
+#### Verificación de media cero
+
+##### 1) Hipótesis
+h0= la media es 0.
+h1 = la media es diferente de 0.
+
+##### 2) Reglas de Desición
+Se rechaza h0 si:
+Regla clásica: Si |t*| es mayor a |t0|
+Regla valor p: Si valor p < α
+
+##### 3) Análisis de Resultado
+```{r}
+t.test(modelo$residuals, conf.level = 0.95)
+```
+##### 4) Conclusión
+A través de esta prueba se demuestra que los valores de la media son muy cercanos a 0. Por consiguiente, se procede a aceptar la hipótesis nula.
+Adicionalmente, se comprueba que no todos los valores de |t*| son mayores que el valor de |t0| y que el valor-p (1) es mayor al valor propuesto de alpha (0.05). Entonces, se procede a aceptar la hipótesis nula. Por lo que la media del modelo es igual a 0.
+
+### Variabilidad constante de los residuos (homocedasticidad):
+
+```{r}
+ggplot(data = df_num, aes(modelo$fitted.values, modelo$residuals)) +geom_point() +
+#geom_smooth(color = "firebrick", se = FALSE) +
+geom_hline(yintercept = 0) +
+theme_bw()
+```
+
+```{r}
+library(lmtest)
+bptest(modelo)
+```
+A partir de este test y la gráfica de dispersión de los residuos, se demuestra que no hay evidencia de falta de homocedasticidad.
+
+##### Análisis del resultado
+Una vez más, en la gráfica superior se puede apreciar claramente que los residuos se distribuyen de manera aleatoria en torno a 0 y que tienen aproximadamente una variabilidad constante a lo largo del eje horizontal ya que no tienen un patrón específico y que hay ausencia de dispersión en los extremos. Por ende, se puede constatar que la variabilidad es independiente del valor ajustado.En efecto, se puede denotar que no existe ninguna estructura evidente en los datos, por lo que la varianza de los residuos debe ser constante en casi sus valores. Aparte, se infiere claramente que hay una independencia entre las variables, entonces, se puede afirmar que hay linealidad y existencia de homocedasticidad. De modo que los residuos son aleatorios lo que implica que el modelo es adecuado y se revindica su homocedasticidad.
+
+
+### Análisis de datos atípicos o influyentes
+
+```{r}
+library(dplyr)
+library(ggplot2)
+df_num$studentized_residual <- rstudent(modelo)
+ggplot(data = df_num, aes(x = predict(modelo), y = abs(studentized_residual))) +
+geom_hline(yintercept = 3, color = "grey", linetype = "dashed") +
+# se identifican en rojo observaciones con residuos estandarizados absolutos > 3
+geom_point(aes(color = ifelse(abs(studentized_residual) > 3, 'red', 'black'))) +
+scale_color_identity() +
+labs(title = "Distribución de los residuos studentized",
+     x = "predicción modelo") + 
+theme_bw() + theme(plot.title = element_text(hjust = 0.5))
+```
+Conteo de valores atípicos
+```{r}
+which(abs(df_num$studentized_residual) > 3)
+```
+Se observan 3 valores atípicos en el modelo que podría causando ruido en el modelo, los cuales, son las observaciones 1, 18 y 20 respectivamente.
+
+```{r}
+summary(influence.measures(modelo))
+```
+##### 2) Criterios de Desición
+En la tabla generada se recogen las observaciones que son significativamente influyentes en al menos uno de los predictores (una columna para cada predictor). Las tres últimas columnas son 3 medidas distintas para cuantificar la influencia. A modo de guía se pueden considerar excesivamente influyentes aquellas observaciones para las que:
+
+Leverages (hat): Se consideran observaciones influyentes aquellas cuyos valores hat superen 2.5((p+1)/n), siendo p el número de predictores y n el número de observaciones.
+Distancia Cook (cook.d): Se consideran influyentes valores superiores a 4/n.
+
+##### 3) Análisis de Resultados
+
+```{r}
+pred =4
+hat_Value = 2.5*((pred+1)/n)
+print(paste("El valor hat de referencia del modelo es: ", hat_Value))
+
+cook_ref = 4/n
+print(paste("El valor cook de referencia del modelo es: ", cook_ref))
+```
+De acuerdo al criterio de leverage, las observaciones 14 y 47 marcadas en la tabla superior se consideran significativamente influyentes para el modelo. 
+Mientras que en el criterio de Distancia cook, las observaciones 1, 14, 17, 17 y 20 son influyentes y podrían ser consideradas como outliers .
+
+
+####visualización gráfica de las influencias
+```{r}
+influencePlot(modelo)
+```
+De acuerdo a esta gráfica de influencias, las observaciones 1, 14 y 20 son las de mayor incidencia en el modelo. Por lo que deberían ser retiradas para ajustarlo y tener mejores resultados.
+
+## 7. Conclusión
+
+El modelo lineal múltiple Concentración media de mercurio en los peces de los lagos de Florida = 0.964X11 + 0.002X8 es capaz de explicar el 92.32% de la variabilidad observada en la concentración media de mercurio (R2: 0.9232, R2-Adjusted: 0.9202). El test F muestra que es significativo (p-value: 2.2e-16).
+
+se satisfacen todas las condiciones para este tipo de regresión múltiple ya que:
+* Los residuos de la muestra, siguen una distribución normal.
+* La media de los residuos es igual de 0.
+* Existen 3 datos atípicos que podría estar afectando la calidad del modelo.
+* Se cumple el supuesto de colinialidad e independencia entre variables.
+* Las variables predictoras no presentan linealidad. 
+* Las variables tienen un bajo grado de varianza.
+ 
+ Por ende, se confirma la calidad del modelo propuesto y es posible responder a la pregunta de investigación:
+ 
+### ¿Cuáles son los principales factores que influyen en el nivel de contaminación por mercurio en los peces de los lagos de Florida? 
+
+De acuerdo al modelo propuesto, los factores principales que más influyen en el nivel de contaminación por mercurio en los peces de los lagos de Florida son: Cantidad de peces en el lago (variable predictora X8) y Estimación de la concentración de mercurio (variable predictora X11). No obstante, se recomienda ajustar el modelo para refinar los resultados y eliminar los valores atípicos nque están produciendo sesgos en el análisis de residuos redundancia para dar mayor confiabilidad y validez al modelo, además de explorar el efecto que tienen otras variables externas que se han dejado fuera de este estudio que podrían dar mayor información sobre el origen o la causa raíz de este problema y poder tomar acciones pertinentes que tengan un impacto directo sobre este problema medioambiental dentro del ecosistema.
+
+###¿Las concentraciones de alcalinidad, clorofila, calcio en el agua del lago influyen en la concentración de mercurio de los peces?
+De acuerdo con el análisis de correlación, los factores de alcalinidad (X3), clorofila (X6) y calcio (X5) si tienen una influencia media sobre la concentración de mercurio de los peces (X7), no obstante, únicamente el factor de alcalinidad fue considerado dentro de la selección del modelo ya que estas 3 variables poseen una correlación entre sí, por lo que sería redundante incluirlas dentro del modelo como tan ya que se estaría intensificando la influencia que estas ya tienen sobre la variable en análisis. Por ende, solo se limitó a seleccionar aquel factor que tuviera el coeficiente de correlación más alto con respecto a la concentración de mercurio en los peces, es decir, el factor de alcalinidad. No obstante, después de aplicar el método de selección de factores stepwise mixto y el parámetro de Akaike(AIC), se descartó a este factor en el modelo final y más óptimo. 
+```{r}
+#install.packages("corrplot") 
+library(corrplot)
+
+C = cor(df[,c(-1,-2)])
+#Se quitan las primeras dos variables del análisis ya que únicamente tienen propósitos de identificación de cada dato.
+corrplot(C, method = 'number')
+```
+# Segundo Modelo
+
+## Pregunta de Investigación:
+¿Existe alguna influencia del grupo de edad de los peces en la concentración de mercurio promedio de los lagos?
+
+## Herramienta Estadística seleccionada:
+Se procederá a aplicar un modelo de ANOVA de una vía (con un solo factor) para determinar si existe alguna diferencia en los valores medios de la concentración de mercurio promedio de los lagos en diferents grupos de edades de los peces. Se requiere estudiar si existen diferencias significativas entre las medias de una variable aleatoria continua (en este caso la concentración promedio de mercurio) en diferentes niveles de una variable cualitativa (en este caso el grupo predominante de peces en cada lago, de acuerdo a su edad) tras examinar el valor de las medias de cada grupo.
+
+# Exploración de los datos
+Convertir variable a string
+```{r}
+df$X12 = as.character(df$X12)
+grupo = factor(df$X12)
+contaminacion = df$X7
+```
+
+
+Para observar mejor los efectos de los factores principales, se calcula la media por nivel y se  grafica por nivel. También se calcula la media general. 
+```{r}
+tapply(contaminacion,grupo,mean)
+M=mean(contaminacion)
+M
+
+```
+```{r}
+# Tabla de frecuencias
+mi_tabla <- table(df$X12)
+
+pie(mi_tabla, main ="Diagrama de Pastel para Edad de Peces")
+
+# Gráfico de barras de frecuencia absoluta
+barplot(mi_tabla, main = "Frequencia absoluta Edad Peces",
+        col = rainbow(3))
+```
+El set de datos está desbalanceado ya que existen más observaciones de grupos adultos de peces que de peces jóvenes. 
+##Estudio preliminar de normalidad para verificar condiciones de ANOVA
+```{r}
+par(mfrow = c(2,1))
+qqnorm(df[df$X12 == "0","X7"], main = "Jóvenes")
+qqline(df[df$X12 == "0","X7"])
+qqnorm(df[df$X12 == "1","X7"], main = "Adultos")
+qqline(df[df$X12 == "1","X7"])
+```
+Se observa que el nivel de concentración de mercurio se distribuye de forma normal en cada uno de los grupos observados ya que se puede ver que para ambos grupos, las observaciones se ajustan casi perfectamente a la recta y que la mayoría de datos está concentrada en el centro y hay menor densidad de datos en las colas en una tendencia creciente. Se muestra una distribución con colas suaves la cual posee una alta curtosis en forma de una distribución Leptocúrtica.De igual manera, se procedió a graficar un histograma de frecuencias para observar la distribución de la data.
+
+## Ver Varianza Constante entre grupos
+```{r}
+fligner.test(contaminacion ~ grupo,df)
+```
+
+Dado que el valor-p es mayor a alpha, entonces se puede ver que si hay homocedasticidad en los sets. 
+### Graficar el boxplot
+```{r}
+ggplot(data = df, aes(x = X12, y = X7, color = X12)) +
+    geom_boxplot() +
+    theme_bw()
+```
+A partir de este boxplot, se puede ver que el tamaño de las cajas para ambos grupos de peces es similar por lo que es un indicio clave de homocedasticidad. Adcionalmente, se identifica un valor extremo en el primer grupo de peces jóvenes el cuál deberá ser examinado detenidamente para ver su incidencia sobre los resultados del modelo.
+
+##Haz los intervalos de confianza de rendimiento por sexo. Grafícalos
+
+```{r}
+m_cont = tapply(contaminacion, grupo, mean)
+s_cont = tapply(contaminacion, grupo, sd)
+n_cont = tapply(contaminacion, grupo, length)
+
+sm_cont = s_cont/sqrt(n_cont)
+E_cont=abs(qt(0.025,n_cont-1))*sm_cont
+Inf_cont=m_cont-E_cont
+Sup_cont=m_cont+E_cont
+
+boxplot(contaminacion ~ grupo, col = 2:5, horizontal = TRUE)
+abline(v = mean(contaminacion), lty = 3, col = "red")
+```
+```{r}
+plot(0,ylim=c(0,3),xlim=c(0,2), yaxt="n", ylab="",xlab="Contaminación",main="Intervalos de confianza - Concentración de mercurio por grupo de edad de peces")
+axis(2,at=c(1:2),labels=c("0","1"))
+for(i in 1:2){
+arrows(Inf_cont[i],i,Sup_cont[i],i, angle=90, code=3, length = 0.1, lwd = 2,col=i+2)
+points(m_cont[i], i, pch=19, cex=1.1,col=i+2)}
+abline(v=mean(contaminacion),lty=3,col="red")
+```
+##Interpreta el resultado desde la perspectiva estadística y en el contexto del problema.
+A través de los intervalos de confianza se puede ver que tanto el intervalo de peces jóvenes como para peces adultos, los intervalos son similares en el nivel de contaminación para cada grupo de edades y se translapan, por lo que se puede decir que el grupo de edades no es un factor decisivo para determinar el nivel de concentración de mercurio ya que las medias son casi iguales.
+
+## Establece las hipótesis estadísticas.
+Factores del Problema:
+* Grupos de edad de los peces.
+
+## Hipótesis estadísticas:
+H0 = El grupo de edad de los peces no incide en la concentración de mercurio promedio de los lagos.
+h1 = El grupo de edad de los peces si incide en la concentración de mercurio promedio de los lagos.
+
+## Aplicar el Anova para 1 factor.
+
+```{r}
+
+A<-aov(df$X7~df$X12)
+
+summary(A)
+
+```
+Debido a que el valor p es mayor que alpha (0.05), no se tiene suficiente información para determinar que al menos dos medias son distintas.
+
+## Comprobar la validez del modelo.
+## Normalidad
+
+```{r}
+residuos=A$residuals
+qqnorm(residuos)
+qqline(residuos)
+```
+
+El comportamiento de esta gráfica de probabildad normal presenta una distribución con colas suaves la cual posee una alta curtosis en forma de una distribución Leptocúrtica. Los residuos en efecto, se comportan como una distribución normal ya que se ajustan casi perfectamente a una línea recta y tienen una tendencia creciente. De igual manera, se procedió a graficar un histograma de frecuencias para observar la distribución de la data.
+```{r}
+hist(residuos)
+```
+En este histograma, se puede verificar claramente que la mayor agrupación de los datos está en el centro de la distribución pero existe un gran sesgo de la media a la izquierda, por lo que se presenta una distribución de tipo normal de la data con un sesgo a la izquierda. 
+
+## Homocedasticidad
+
+```{r}
+plot(A$fitted.values,A$residuals,ylab="Errores",xlab="Valores estimados")
+abline(h=0,col="magenta")
+```
+Con respecto a la homocedasticidad, se puede ver a través de la gráfica que los residuos presentan una dispersión constante ya que cada grupo tiene la misma distancia con respecto al error, y su variabilidad es constante para cada valor de x. Adicionalmente, se aprecia que la media de los errores fue de 0 (justificable por la simetría de los datos con respecto al eje x), por lo que sí tienen una distribución Normal.  
+## Independencia
+
+```{r}
+n = tapply(contaminacion, grupo, length)
+plot(c(1:sum(n)),A$residuals,xlab="Orden de la observación",ylab="Residuos")
+abline(h=0,col="magenta")
+```
+En efecto, se puede ver que no existe una tendencia clara en el comportamiento de los residuos, por lo que se puede decir que son independientes del orden de las observaciones. Es decir, no existe una correlación determinada entre ellos, lo que asegura su relación de independencia. 
+```{r}
+plot(A)
+CD=  0.072/(0.072+5.976) #coeficiente de determinación para el modelo: #metodos/residuos + métodos
+print(paste("El coeficiente de Determinación es: ", CD))
+```
+La representación gráfica de los residuos muestra homocedasticidad en el modelo ya que están distribuidos a lo largo del eje x y no muestran ninguna tendencia estructurada y el gráfico de qqplot muestra una distribución normal con asimetría negativa (con sesgo a la izquierda) lo cuál indica normalidad ya que la mayor parte de los residuos se concentran en la el centro de la distribución y están muy acotados a la recta de la normal.
+
+A partir de las gráficas anteriores, se puede observar que existe una correlación entre el grupo de edades de peces y el nivel de concentración de mercurio en los lagos por el comportamiento creciente de los residuos estandarizados en relación a los cuartiles teóricos. No obstante, el cálculo de coeficiente de correlación indica una correlación mínima positiva entre ambas variables de 1.19%.
+
+## Concluye en el contexto del problema.
+
+En síntesis, cabe recalcar que el grupo de peces por edades no es un factor significativo para la determinación de la concentración de mercurio en los lagos ya que en todos los lagos parece haber casi el mismo nivel de contaminación de mercurio independientemente del grupo de edades de peces que prevalece en dicho lago. 
+
+En otro aspecto, se ha encontrado que el modelo propuesto es capaz de explicar apenas el 1% de la variación, lo cuál también refuta la idea de que este no es un factor determinante. No obstante, esto no limita a la posibilidad de que existan otros factores externos de tipo cualitativos (que no se estén considerando dentro de este análisis) que también tengan incidencia en el nivel de concentración de mercurio de los peces de los lagos o bien es posible atribuir este error a temas de aleatoriedad.  
+
+Dado que existe un desbalance entre la cantidad de observaciones para grupos de peces jóvenes y adultos, se puede decir que fue un diseño de este modelo le falta robustez en términos de su heterocedasticidad. De modo que se recomienda ampliar los datos y tener la misma cantidad de observaciones para ambos grupos para balancear el efecto del grupo de peces en la construcción del modelo. 
+No obstante, a partir de la interpretación de los gráficos Q-Q y los residuos vs. el valor esperado, los datos sí cumplen con las carcaterísticas de nromalidad e independencia lo cuál sustenta la validación del modelo propuesto.
+
+Por ende, se acepta la hipótesis nula de H0.
