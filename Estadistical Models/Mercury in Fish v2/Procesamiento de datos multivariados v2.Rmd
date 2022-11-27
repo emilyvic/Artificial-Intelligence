@@ -1,0 +1,441 @@
+---
+title: "Procesamiento de datos multivariados"
+author: "Emilia Victoria Jácome Iñiguez"
+date: "2022-12-02"
+output:
+  pdf_document:
+    keep_tex: yes
+  html_document:
+    df_print: paged
+---
+
+# Resumen
+
+  La contaminación por mercurio de peces en el agua dulce comestibles es una amenaza directa contra nuestra salud. Se llevó a cabo un estudio reciente en 53 lagos de Florida con el fin de examinar los factores que influían en el nivel de contaminación por mercurio. Las variables que se midieron se encuentran en mercurio.csv y el objetivo principal es hallar cuáles de estas variables son los factores más determinantes para las altas concentraciones de mercurio en los peces de los lagos de Florida, los cuales a su vez están provocando esta contaminación medioambiental.
+Tras los hallazgos y conclusiones obtenidas en el estudio previo, se determinó que el análisis de ANOVA no fue el modelo más apropiado para responder a la pregunta de investigación dado que las variables en cuestión poseen un alto grado de correlación entre sí. Por ende, en este estudio se procede a abordar la pregunta de investigación mediante la aplicación de un Análisis de Componentes Principales (PCA).
+Subsecuentemente, para poder abordar esta problemática, se hizo uso de varias herramientas estadísticas vistas durante el módulo 5 de la concentración Inteligencia Artificial Avanzada para la Ciencia de Datos. Principalmente, se aplicaron varias pruebas de normalidad multivariante a los datos en conjunto y un test de normalidad a cada variable por eparado, la cuál sirvió para evaluar la tendencia de distribución las variables. En segunda instancia, se procedió a aplicar un análisis de componentes principales (PCA) con la finalidad de simplificar el modelo reduciéndo la cantidad de variables en cuestión para no producir redundancia al utilizar variables fundamentando la selección de componentes en función de la varianza explicada acumulada.
+
+Los principales resultados a los que se llegaron fueron:
+
+* El conjunto de las 9 variables no posee normalidad multivariante.
+* Las únicas variables que siguen una distribución normal corresponden a X4 y X9.
+* Los componentes principales que explican el 85% de la varianza explicada del modelo corresponden a: PC1, PC2, y PC3.
+* Las variables principales que producen mayor variación en cada componente, corresponden a: 
+
+  PC1:
+    * X3: Alcalinidad
+    * X4: PH
+    * X7: Concentración media de mercurio
+    * X9: Mínimo de concentración de mercurio en el lago
+    * X10: Máximo de concentración de mercurio en el lago
+    * X11: Estimación de concentración de mercurio.
+
+  PC2:
+    * X3: Alcalinidad
+    * X4: PH
+    * X5: Calcio
+    * X7: Concentración media de mercurio
+    * X9: Mínimo de concentración de mercurio en el lago
+
+  PC3:
+    * X8: Número de peces
+
+
+# Introducción
+Al saber que las variables en cuestión están correlacionadas entre sí a través del estudio previo que se realizó donde se aplicó un modelo de ANOVA, se pretende indagar más a fondo sobre la interrelación de estas variables y averiguar si las variables en cuestión cumplen con la propiedad de normalidad multivariante. Adicionalmente, considerando que varias de ellas están fuertemente correlacionadas entre sí, a través de este estudio, se pretende construir un modelo donde se logre reducir el número de variables resumiéndolas en funciones lineales dependientes de varias variables. De modo que se utilizará la herramienta estadística de Análisis de Componentes principales para determinar las funciones estadísticas que explican mayormente la variación de los datos dentro del modelo, y, de esa manera, se procederá a dar una mejor aproximación a la pregunta de investigación que surge en este estudio: 
+
+## 0. Pregunta Base:
+¿Cuáles son los principales factores que influyen en el nivel de contaminación por mercurio en los peces de los lagos de Florida? 
+pueden surgir preguntas paralelas que desglosan esta pregunta general:
+
+
+# 1. EXPLORACIÓN DE LA BASE DE DATOS
+## Leer la base de datos de mercurio
+```{r}
+df=read.csv("mercurio.csv") #leer la base de datos
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+## Explora las variables y familiarizate con su significado.
+
+La descripción de cada variable es la siguiente: 
+
+X1 = número de indentificación
+X2 = nombre del lago
+X3 = alcalinidad (mg/l de carbonato de calcio)
+X4 = PH
+X5 = calcio (mg/l)
+X6 = clorofila (mg/l)
+X7 = concentración media de mercurio (parte por millón) en el tejido muscular del grupo de peces estudiados en cada lago
+X8 = número de peces estudiados en el lago
+X9 = mínimo de la concentración de mercurio en cada grupo de peces
+X10 = máximo de la concentración de mercurio en cada grupo de peces
+X11 = estimación (mediante regresión) de la concentración de mercurio en el pez de 3 años (o promedio de mercurio cuando la edad no está disponible)
+X12 = indicador de la edad de los peces (0: jóvenes; 1: maduros)
+
+### Identifica la cantidad de datos y variables presentes.
+```{r}
+n_col =length(df)
+print(paste("La cantidad de columnas es: ", n_col))
+n = nrow(df) 
+print(paste("La cantidad de datos es de: ", n))
+
+knitr::opts_chunk$set(echo = FALSE)
+
+```
+
+### Clasifica las variables de acuerdo a su tipo y escala de medición.
+```{r}
+str(df)
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+#Set de variables numéricas
+df_num = df[,c(-1,-2, -12)]
+
+#Set de variable categóricas
+df_cat = df[,c(1,2,12)]
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Exploración de la base de datos - Medidas estadísticas
+### Variables cuantitativas
+#### Medidas de tendencia Central
+```{r}
+summary(df)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+#Obtener valores medios de las variables
+apply(X = df_num, MARGIN = 2, FUN = mean)
+knitr::opts_chunk$set(echo = FALSE)
+```
+```{r}
+#Obtener varianzas de las variables
+apply(X = df_num, MARGIN = 2, FUN = var)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Explora la correlación entre las variables. 
+Identifica cuáles son las correlaciones más fuertes y qué sentido tiene relacionarlas.
+```{r}
+#install.packages("corrplot") 
+library(corrplot)
+
+C = cor(df[,c(-1,-2)])
+#Se quitan las primeras dos variables del análisis ya que únicamente tienen propósitos de identificación de cada dato.
+corrplot(C, method = 'number')
+knitr::opts_chunk$set(echo = FALSE)
+```
+A partir de la matriz de correlación, se puede ver que las variables que tienen las correlaciones más fuertes corresponden a:
+* X11 y X7: 0.96
+* X9 y X7: 0.93
+* X10 y X7: 0.92
+* X11 y X10: 0.86
+* X3 y X5: 0.83
+* X10 y X9: 0.77
+* X3 y X11: -0.63
+* X4 y X11: -0.61
+* X3 y X10: -0.60
+
+X3 = alcalinidad (mg/l de carbonato de calcio)
+X4 = pH
+X5 = calcio (mg/l)
+X7 = concentración media de mercurio (parte por millón) en el tejido muscular del grupo de peces estudiados en cada lago
+X9 = mínimo de la concentración de mercurio en cada grupo de peces
+X10 = máximo de la concentración de mercurio en cada grupo de peces
+X11 = estimación (mediante regresión) de la concentración de mercurio en el pez de 3 años (o promedio de mercurio cuando la edad no está disponible)
+
+# 2. ANÁLISIS DE RESULTADOS
+## 2.1 Análisis de Normalidad
+
+### A) Realice la prueba de normalidad de Mardia y la prueba de Anderson Darling para identificar las variables que son normales y detectar posible normalidad multivariada de grupos de variables.
+
+#### Prueba de normalidad multivariada de Mardia
+Hipótesis:
+
+H_0 (nulo): Las variables siguen una distribución normal multivariante.
+
+H_a (alternativa): las variables no siguen una distribución normal multivariante.
+
+
+a = 0.05
+
+Criterios:
+* Se rechazará la hipótesis nula si el valor p es menor a alfa.
+
+```{r}
+library(QuantPsyc)
+mult.norm (df_num) $ mult.test
+knitr::opts_chunk$set(echo = FALSE)
+```
+Dado que los valores p son menores a alpha, se rechaza la hipótesis nula H_0.
+
+```{r}
+# test de normalidad
+# test de Mardia en MVN
+library(MVN)
+result <- mvn(data = df_num, mvnTest = "mardia")
+result$multivariateNormality
+knitr::opts_chunk$set(echo = FALSE)
+```
+Tras la prueba de normalidad multivariada, se procederá a  rechazar la hipótesis nula H_0 debido a que los valores p son mucho menores que el valor de alpha establecido (0.05).
+
+#### Prueba de normalidad multivariada de Anderson-Darling
+```{r}
+library(QuantPsyc)
+library(dplyr)
+df_bi = subset(df_num, select=c("X4", "X9"))
+mult.norm (df_bi) $ mult.test
+knitr::opts_chunk$set(echo = FALSE)
+
+```
+
+```{r}
+library(mvnTest)
+AD.test(df_num, qqplot = FALSE)
+knitr::opts_chunk$set(echo = FALSE)
+```
+A partir del test de Anderson-Darling para la normalidad multivariada, se puede ver que el valor p es mucho menor al valor preestablecido de significancia representado por alpha (0.05) por lo que se determina que no existe un comportamiento normal entre todas las variables en cuestión. 
+
+
+```{r}
+library(mvnTest)
+AD.test(df_bi, qqplot = FALSE)
+knitr::opts_chunk$set(echo = FALSE)
+```
+A partir del test de Anderson-Darling para la normalidad multivariada entre X4 y X9, se puede ver que el valor p es mayor al valor preestablecido de significancia representado por alpha (0.05) por lo que se determina que si existe normalidad multivariada en el grupo de variables X4 y X9.
+
+### B) Realiza la prueba de Mardia y Anderson Darling de las variables que sí tuvieron normalidad en los incisos anteriores. Interpreta los resultados obtenidos con base en ambas pruebas y en la interpretación del sesgo y la curtosis de cada una de ellas.
+
+#### Prueba de normalidad de Shapiro-Wilk
+```{r}
+# test de normalidad univariante
+# Test de Shapiro-Wilks
+result <- mvn(data = df_num, univariateTest = "SW", desc = TRUE)
+result
+knitr::opts_chunk$set(echo = FALSE)
+```
+#### Prueba de normalidad de Anderson-Darling
+
+```{r}
+result <- mvn(data = df_num, mvnTest = "royston", univariateTest = "AD", desc = TRUE)
+result
+knitr::opts_chunk$set(echo = FALSE)
+```
+A partir de las pruebas de Anderson-Darling y el test de Shapiro-Wilk, se puede determinar que las variables que no tienen normalidad son:
+* X3 = alcalinidad (mg/l de carbonato de calcio)
+* X5 = calcio (mg/l)
+* X6 = clorofila (mg/l)
+* X7 = concentración media de mercurio (parte por millón) en el tejido muscular del grupo de peces estudiados en cada lago
+* X8 = número de peces estudiados en el lago
+* X9 = mínimo de la concentración de mercurio en cada grupo de peces
+* X11 = estimación (mediante regresión) de la concentración de mercurio en el pez de 3 años (o promedio de mercurio cuando la edad no está disponible)
+
+Por otro lado, las variables que si tienen normalidad de acuerdo a este test corresponden a:
+* x4: PH
+* x10: máximo de la concentración de mercurio en cada grupo de peces
+
+### C) Haz la gráfica de contorno de la normal multivariada obtenida en el inciso B.
+
+```{r}
+library(dplyr)
+# Graficos de perspectiva y contorno para datos bivariados
+library(MVN)
+
+# perspective plot 
+result <- mvn(df_bi, mvnTest = "hz", multivariatePlot = "persp")
+
+mvn(df_bi, mvnTest = "hz", multivariatePlot = "contour")
+knitr::opts_chunk$set(echo = FALSE)
+```
+A través de las gráficas de contorno, se puede ver que ambas variables (X4, X10) tienen normalidad multivariada.
+### D) Detecta datos atípicos o influyentes en la normal multivariada encontrada en el inciso B (auxíliate de la distancia de Mahalanobis y del gráfico QQplot multivariado)
+
+La suposición de Normalidad Multivariada requiere la ausencia de valores atípicos multivariados. Por ende, es necesario verificar si los datos tienen valores atípicos multivariantes, antes de comenzar con el análisis de componentes principales. La MVN incluye dos métodos de detección de valores atípicos multivariados que se basan en distancias robustas de Mahalanobis (rMD (x)). La distancia de Mahalanobis es una métrica que calcula qué tan lejos está cada observación del centro de distribución o centroide en el espacio multivariable. Las distancias robustas se estiman a partir de estimadores determinantes de covarianza mínima. 
+
+Distancia Mahalanobis:
+
+Calcule distancias robustas de Mahalanobis (rMD (xi)),
+
+Calcule el cuantil del 97.5 por ciento (Q) de la distribución de chi-cuadrado,
+
+Declare rMD (xi)> Q como posible valor atípico.
+
+Distancia ajustada de Mahalanobis:
+
+Calcule distancias robustas de Mahalanobis (rMD (xi)),
+
+Calcule el cuantil ajustado de 97.5 por ciento (AQ) de la distribución de chi-Cuadrado,
+
+Declare rMD (xi)> AQ como posible valor atípico.
+```{r}
+# Mahalanobis distance
+result <- mvn(data = df_bi, mvnTest = "hz", multivariateOutlierMethod = "quan")
+
+# Adjusted Mahalanobis distance
+result <- mvn(data=df_bi,mvnTest="hz",multivariateOutlierMethod="adj")
+knitr::opts_chunk$set(echo = FALSE)
+```
+A partir de estas gráficas se puede observar que la distancia de Mahalanobis declara 5 observaciones como valores atípicos multivariados, mientras que la distancia de Mahalanobis ajustada no declara tan solo 4
+
+## 2.2 Análisis de Componentes Principales
+
+### A) Justifique por qué es adecuado el uso de componentes principales para analizar la base (haz uso de la matriz de correlaciones)
+El análisis de componentes principales es adecuado para analizar la base de este problema ya que de acuerdo a lo que se determinó en el análisis previo de ANOVA, existen variables en este dataset que son codependientes entre sí y al momento de hallar cuáles son los factores determinantes en la contaminación de mercurio de los lagos de Florida, dichas variables solo traen redundancia al análisis ya que recaen dentro de la limitante de ANOVA dado que las variables no pueden estar correlacionadas entre sí y deben ser linealmente independientes unas de otras lo cuál no se cumplió al existir altos grados de correlación entre ellas tal y como se puede observar en la siguiente matriz de correlación.
+
+```{r}
+library(corrplot)
+library(PerformanceAnalytics)
+correlacion<-round(cor(df_num), 1)
+
+corrplot(correlacion, method="number", type="upper")
+chart.Correlation(df_num, histogram = F, pch = 19)
+```
+De modo que el análisis de componentes principales (ACP) sirve justamente para resumir las variables que explican al modelo en funciones. Lo que busca es simplificar la cantidad de variables que se tienen al resumir a aquellas variables redundantes en funciones. Subsecuentemente, se generarán nuevas variables como resultado de la combinación lineal de las variables originales y de esa manera se agrupará la mayor variación posible. En efecto, su objetivo primordial es reducir lo más posible el número de variables en cuestión en función de la proporción de variabilidad que tienen sobre el modelo, descartando aquellas que realmente no apoyan mucho a la explicación de la variable que se pretende predecir.En otros términos, se elegirán las variables que introducen la mayor variabilidad al sistema. Estas nuevas variables que se crean, recibirán el nombre de componentes principales.El primer componente principal agrupa la mayor parte de variación, el segundo algo menos, y así sucesivamente.
+
+Los supuestos que se van a tomar para aplicar este análisis corresponden a:
+* Todas las variables deben ser numéricas.
+* La cantidad de datos debe ser mayhor que el número de variables en cuestión (al menos 10 veces).
+* No se requiere un supuesto de normalidad.
+* Las variabls deben estar correlacionadas entre sí.
+
+### B) Realiza el análisis de componentes principales y justifica el número de componentes principales apropiados para reducir la dimensión de la base
+
+#### 1. Obtener matriz de Covarianzas
+```{r}
+matriz_cov <- cov(df_num)
+matriz_cov
+knitr::opts_chunk$set(echo = FALSE)
+```
+#### 2. Obtener matriz de Correlacion
+```{r}
+matriz_cor <- cor(df_num)
+matriz_cor
+knitr::opts_chunk$set(echo = FALSE)
+```
+#### 3. Aplicar PCA
+
+```{r}
+colnames(df_num) = c("Alcalinidad", "PH", "Calcio", "Clorofila", "Concentración Mercurio", "Cant. Peces", "Mín Mercurio", "Máx Mercurio", "Estimación Merc")
+pca <- princomp(df_num, cor = TRUE)
+names(pca)
+
+print("Nuevas medias de las variables antes de la centralización")
+pca$center
+
+print("Nuevas varianzas de las variables antes de la centralización")
+pca$scale
+knitr::opts_chunk$set(echo = FALSE)
+```
+#### 4. Obtener eigenvalores y eigenvectores
+```{r}
+eigen <- eigen(matriz_cor)
+print("Eigen valores:") 
+eigen$values
+print("Eigen vectores:") #Corresponden a los componentes principales
+eigen$vectors
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+#### 5. Hallar Valor de los loadings ϕ para cada componente (eigenvector).
+```{r}
+pca$loadings
+knitr::opts_chunk$set(echo = FALSE)
+```
+El primer componente es el resultado de la siguiente combinación lineal de las variables originales:
+
+PC1 = 0.35 X3 + 0.34 X4 + 0.28 X5 + 0.28 X6 - 0.40 X7 - 0.02 X8 - 0.37 X9 - 0.38 X10 - 0.40 X11
+
+Los pesos asignados en el primer componente a las variables X11, X10, X9,  X7 y X3 son aproximadamente iguales entre ellos y superiores al asignado a X8. Esto significa que el primer componente PC1 recoge mayoritariamente la información correspondiente a estimación de la concentración, Máxima concentración de mercurio, Mínimo de concentración, Concentración media de mercurio y alcalinidad.
+
+```{r}
+pca$scores
+knitr::opts_chunk$set(echo = FALSE)
+```
+#### 6. Conocer la varianza explicada por cada componente, la proporción respecto al total y la proporción de varianza acumulada.
+```{r}
+library(ggplot2)
+
+print("Varianza explicada por cada componente:")
+pca$sdev^2
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+prop_varianza <- pca$sdev^2 / sum(pca$sdev^2)
+print("Proporción de Varianza explicada por cada componente:")
+prop_varianza
+
+ggplot(data = data.frame(prop_varianza, pc = 1:9),
+       aes(x = pc, y = prop_varianza)) +
+  geom_col(width = 0.7) +
+  scale_y_continuous(limits = c(0,1)) +
+  theme_bw() +
+  labs(x = "Componente principal",
+       y = "Prop. de varianza explicada")
+knitr::opts_chunk$set(echo = FALSE)
+```
+Se puede ver claramente que el primer componente explica la mayor cantidad de varianza en un 60%.
+
+```{r}
+prop_varianza_acum <- cumsum(prop_varianza)
+prop_varianza_acum
+
+ggplot(data = data.frame(prop_varianza_acum, pc = 1:9),
+       aes(x = pc, y = prop_varianza_acum, group = 1)) +
+  geom_point() +
+  geom_label(aes(label = round(prop_varianza_acum,2))) +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Componente principal",
+       y = "Prop. varianza explicada acumulada")
+knitr::opts_chunk$set(echo = FALSE)
+```
+Apreciándo la gráfica, se determina que el primer componente explica el 59% de la varianza observada en los datos, el segundo el 14% y el tercero el 12% . Los tres últimos componentes no superan por separado el 2% de varianza explicada. Si se aplicasen únicamente los tres primeros componentes se conseguiría explicar el 85% de la varianza observada.
+
+### C) Representa en un gráfico los vectores asociados a las variables y las puntuaciones de las observaciones de las dos primeras componentes
+```{r}
+biplot(x = pca, scale = 0, cex = 0.6, col = c("blue4", "brown3"))
+knitr::opts_chunk$set(echo = FALSE)
+```
+Cuanto más largas sean las flechas rojas, más alto es el valor del coeficiente de esa variable en ese componente.Claramente se puede ver que el Componente 1 tiene una variabilidad más amplia que el componente 2 ya que los nuevos datos están más dispersos, por lo que se justifica graficamente la superioridad del Componente 1 en función de su varianza explicada. También se puede observar una agrupación visual de las variables de acuerdo a su signo lo que se traduce en que X3, X4, X5 y X6 tienen una relación lineal positiva, mientras que X7, X9, X10 y X11 tienen una correlación lineal negativa con respecto al PC1. En lo que respecta a X8, se puede ver que esta es la variable que tiene menos influencia en ambos componentes y se comporta de manera isolada con respecto al resto de variables ya que tiene una tendencia negativa con respecto a ambos componentes.  
+
+# CONCLUSIÓN
+
+### D) Interprete los resultados. Explique brevemente a qué conclusiones llega con su análisis y qué significado tienen los componentes seleccionados en el contexto del problema
+A partir del análisis de componentes principales, se obtuvo que los tres primeros componentes principales en su conjunto explican más del 85% de la varianza del modelo, por lo que se procederán a considerar estos componentes como los más significativos y exclusivos para determinar las variables que más variación causan dentro del contexto del problema.
+Dentro de cada componente, se procederá a escoger las variables más significativas (por encima de 0.30) dentro de cada componente.
+
+Por ende, para el primer componente, las variables más importantes corresponden a:
+* X3: Alcalinidad
+* X4: PH
+* X7: Concentración media de mercurio
+* X9: Mínimo de concentración de mercurio en el lago
+* X10: Máximo de concentración de mercurio en el lago
+* X11: Estimación de concentración de mercurio.
+
+Por ende, para el segundo componente, las variables más importantes corresponden a:
+* X3: Alcalinidad
+* X4: PH
+* X5: Calcio
+* X7: Concentración media de mercurio
+* X9: Mínimo de concentración de mercurio en el lago
+
+Por ende, para el tercer componente, las variables más importantes corresponden a:
+* X8: Número de peces
+
+En síntesis, se puede concluir que los factores que influyen mayormente en la contaminación de los lagos de la concentración media de merurio corresponden a:
+* Alcalinidad
+* PH
+* Calcio
+* Mínimo de Concentración de mercurio en el lago.
+* Máximo de concentración de mercurio en el lago.
+* Número de peces en el lago.
+
+
+# LIGA A GITHUB:
+https://github.com/emilyvic/Artificial-Intelligence/tree/main/Estadistical%20Models/Mercury%20in%20Fish%20v2
